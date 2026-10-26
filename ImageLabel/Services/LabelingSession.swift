@@ -91,6 +91,29 @@ final class LabelingSession: ObservableObject {
             : "Loaded \(items.count) image\(items.count == 1 ? "" : "s")."
     }
 
+    /// Load a subset of images (e.g. Process Folder’s no-face set) under a shared root folder.
+    func loadImages(_ urls: [URL], folderURL: URL?) {
+        if let folderURL {
+            _ = folderURL.startAccessingSecurityScopedResource()
+            self.folderURL = folderURL
+        } else {
+            self.folderURL = urls.first?.deletingLastPathComponent()
+        }
+        lastUndo = nil
+        renamePreview = []
+        groupPreview = []
+        groupPreviewIsAuto = false
+        selectedTopic = nil
+        for url in urls { _ = url.startAccessingSecurityScopedResource() }
+        items = urls
+            .filter { SupportedImageTypes.isSupported(url: $0) }
+            .sorted { $0.lastPathComponent.localizedStandardCompare($1.lastPathComponent) == .orderedAscending }
+            .map { ImageItem(id: $0, url: $0) }
+        statusMessage = items.isEmpty
+            ? "No images to label."
+            : "Loaded \(items.count) image\(items.count == 1 ? "" : "s") without faces."
+    }
+
     func labelAll(using settings: SettingsStore) async {
         guard !items.isEmpty else { return }
         guard !isLabeling else { return }

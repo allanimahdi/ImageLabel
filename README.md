@@ -61,14 +61,27 @@ The app stores only the **file path** in preferences. `.gitignore` already exclu
 
 ## How to use
 
-The home screen shows four large primary actions: **Label & Rename**, **Auto-Group into Folders**, **Rename by Faces**, and **Settings**. **Home** in the label workspace returns to that landing.
+The home screen leads with **Process Folder** (one-button workflow). Individual tools stay under **Advanced**: Label & Rename, Auto-Group, Rename by Faces, and Settings.
 
-1. **Select Folder** — choose a directory of images (`jpg`, `jpeg`, `png`, `heic`, `heif`, `webp`, `gif`, `tif`/`tiff`, `bmp`). HEIC/HEIF are re-encoded to JPEG for Google when needed; Local can read common formats via Vision.
-2. **Label Images** — Local or Google per Settings. Progress in the footer; failures are **per file**. On success, **Rename to Top Labels** opens.
-3. **Rename Files…** — apply best-score label only (e.g. `golden_retriever.jpg`). Collisions get `_2`, `_3`, …. **Undo** when available.
-4. **Rename by Faces…** — on-device face detection & grouping (no photo upload): Select → Detect & Group → Identify People → Preview & Rename. Names look like `Mahdi-Marija.jpg` (left→right by default; alphabetical optional in Settings). Unknown-only photos keep their original names. Optional: remember people on this Mac / delete stored identities in Settings.
-5. **Auto-Group into Folders** (optional) — preview then move each labeled image into one **coarse** folder (`Animals`, `People`, `Nature`, `Food`, `Vehicles`, `Buildings`, `Sports`, `Technology`, `Art`, or `Other`). Fine labels like “Golden Retriever” collapse into `Animals` via keyword rules (not dozens of niche folders).
-6. **Group by Topic** (optional) — pick an exact Vision label yourself; preview then move matching files into a folder named after that label.
+### Process Folder (recommended)
+
+1. Tap **Process Folder** and choose a directory of images (`jpg`, `jpeg`, `png`, `heic`, `heif`, `webp`, `gif`, `tif`/`tiff`, `bmp`).
+2. The app scans on-device and shows counts: **with faces** vs **without faces**.
+3. **With faces** → existing **Rename by Faces** flow (detect → **mandatory face verification** → identify → preview → rename). Verification is not skipped.
+4. **Without faces** → **Label & Rename** (Local Apple Vision by default / Settings backend), then **Auto-Group into Folders** (coarse main categories).
+5. Guided steps; tap **I’ve finished faces** / **Mark complete** to advance. **Home** returns to the landing.
+
+### Advanced (single features)
+
+1. **Label & Rename** — open a folder, Label Images, review Rename to Top Labels.
+2. **Rename Files…** — apply best-score label only (e.g. `golden_retriever.jpg`). Collisions get `_2`, `_3`, …. **Undo** when available.
+3. **Rename by Faces…** — on-device face detection & grouping (no photo upload): Select → Detect & Group → Face Verification → Identify People → Preview & Rename. Names look like `Mahdi-Marija.jpg` (left→right by default; alphabetical optional in Settings). Unknown-only photos keep their original names.
+4. **Auto-Group into Folders** — preview then move each labeled image into one **coarse** folder (`Animals`, `People`, `Nature`, `Food`, `Vehicles`, `Buildings`, `Sports`, `Technology`, `Art`, or `Other`).
+5. **Group by Topic** (in the label workspace) — pick an exact Vision label; preview then move matching files.
+
+### Look & feel
+
+UI uses a fixed palette: Eggshell backgrounds, Powder Blush primary actions, Icy Aqua / Light Blue secondary surfaces, Blue Slate text (`AppTheme` + asset color tokens).
 
 ## Notes
 

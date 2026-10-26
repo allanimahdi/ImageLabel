@@ -133,6 +133,20 @@ final class FaceRenameSession: ObservableObject {
             : "Selected \(photoURLs.count) photo\(photoURLs.count == 1 ? "" : "s")."
     }
 
+    /// Seed photos from Process Folder (or other orchestrators); stays on Select so Detect can run.
+    func loadPhotos(_ urls: [URL], folderURL: URL?) {
+        reset()
+        for url in urls { _ = url.startAccessingSecurityScopedResource() }
+        photoURLs = urls.sorted {
+            $0.lastPathComponent.localizedStandardCompare($1.lastPathComponent) == .orderedAscending
+        }
+        self.folderURL = folderURL ?? photoURLs.first?.deletingLastPathComponent()
+        statusMessage = photoURLs.isEmpty
+            ? "No photos with faces to rename."
+            : "Ready: \(photoURLs.count) photo\(photoURLs.count == 1 ? "" : "s") with faces."
+        step = .select
+    }
+
     // MARK: - Detect & cluster
 
     func startDetection(settings: SettingsStore) async {

@@ -5,6 +5,18 @@ import Vision
 
 /// On-device face detection + feature-print embeddings (no network).
 enum FaceDetectionService {
+    /// Fast presence check: rectangles only (no crops / embeddings).
+    static func imageContainsFaces(at imageURL: URL) throws -> Bool {
+        guard let cgImage = loadCGImage(url: imageURL) else {
+            throw VisionError.labeling("Could not read image for face detection: \(imageURL.lastPathComponent)")
+        }
+        let handler = VNImageRequestHandler(cgImage: cgImage, options: [:])
+        let faceRequest = VNDetectFaceRectanglesRequest()
+        faceRequest.revision = VNDetectFaceRectanglesRequestRevision3
+        try handler.perform([faceRequest])
+        return !(faceRequest.results ?? []).isEmpty
+    }
+
     /// Detect faces and compute `VNFeaturePrintObservation` embeddings on each crop.
     static func detectFaces(in imageURL: URL) throws -> [DetectedFace] {
         guard let cgImage = loadCGImage(url: imageURL) else {

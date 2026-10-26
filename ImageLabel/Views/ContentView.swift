@@ -4,20 +4,32 @@ struct ContentView: View {
     @EnvironmentObject private var settings: SettingsStore
     @EnvironmentObject private var session: LabelingSession
     @EnvironmentObject private var faceSession: FaceRenameSession
+    @EnvironmentObject private var processSession: ProcessFolderSession
     @EnvironmentObject private var identityStore: FaceIdentityStore
     @State private var showSettings = false
     @State private var showFaceRename = false
     /// When false, show the home landing; true after opening a folder for Label & Rename.
     @State private var showLabelWorkspace = false
+    @State private var showProcessFolder = false
 
     var body: some View {
         Group {
-            if showLabelWorkspace, session.folderURL != nil {
+            if showProcessFolder {
+                ProcessFolderFlowView(
+                    onClose: {
+                        showProcessFolder = false
+                    },
+                    onStartFaces: {
+                        showFaceRename = true
+                    }
+                )
+            } else if showLabelWorkspace, session.folderURL != nil {
                 labelWorkspace
             } else {
                 HomeLandingView(
                     labelingBackendLabel: settings.labelingBackend.rawValue,
                     canLabel: settings.canLabel,
+                    onProcessFolder: startProcessFolder,
                     onLabelAndRename: startLabelAndRename,
                     onAutoGroup: startAutoGroupFromHome,
                     onRenameByFaces: {
@@ -42,7 +54,13 @@ struct ContentView: View {
             GroupPreviewSheet()
                 .environmentObject(session)
         }
-        .sheet(isPresented: $showFaceRename) {
+        .sheet(isPresented: $showFaceRename, onDismiss: {
+            // If Process Folder is waiting on the faces branch, leave the user on that step
+            // so they can confirm “I’ve finished faces” (verification must not be auto-skipped).
+            if showProcessFolder, processSession.step == .faces {
+                processSession.statusMessage = "Close Rename by Faces when done, then continue."
+            }
+        }) {
             FaceRenameFlowView()
                 .environmentObject(settings)
                 .environmentObject(faceSession)
@@ -56,6 +74,14 @@ struct ContentView: View {
     }
 
     // MARK: - Home actions
+
+    private func startProcessFolder() {
+        processSession.reset()
+        if processSession.chooseFolder() {
+            showProcessFolder = true
+            Task { await processSession.startScan() }
+        }
+    }
 
     private func startLabelAndRename() {
         session.chooseFolder()
@@ -83,15 +109,17 @@ struct ContentView: View {
     private var labelWorkspace: some View {
         VStack(spacing: 0) {
             workspaceToolbar
-            Divider()
+            Rectangle().fill(AppTheme.border).frame(height: 1)
             if session.items.isEmpty {
                 workspaceEmpty
             } else {
                 imageTable
             }
-            Divider()
+            Rectangle().fill(AppTheme.border).frame(height: 1)
             footer
         }
+        .background(AppTheme.background)
+        .tint(AppTheme.accent)
     }
 
     private var workspaceToolbar: some View {
@@ -177,17 +205,22 @@ struct ContentView: View {
         }
         .padding(.horizontal, 14)
         .padding(.vertical, 8)
+        .background(AppTheme.surfaceSecondary.opacity(0.45))
+        .foregroundStyle(AppTheme.text)
     }
 
     private var workspaceEmpty: some View {
         VStack(spacing: 12) {
             Text("No supported images in this folder")
                 .font(.title3)
+                .foregroundStyle(AppTheme.text)
             Text("Pick another folder, or go Home and choose a different action.")
-                .foregroundStyle(.secondary)
+                .foregroundStyle(AppTheme.textSecondary)
             Button("Choose Folder") { session.chooseFolder() }
+                .buttonStyle(AppPrimaryButtonStyle())
         }
         .frame(maxWidth: .infinity, maxHeight: .infinity)
+        .background(AppTheme.atmosphereGradient.opacity(0.7))
     }
 
     private var imageTable: some View {
@@ -244,11 +277,11 @@ struct ContentView: View {
 
     private func statusColor(_ status: ImageItemStatus) -> Color {
         switch status {
-        case .pending: return .secondary
-        case .labeling: return .blue
-        case .labeled: return .primary
-        case .failed: return .red
-        case .renamed, .grouped: return .green
+        case .pending: return AppTheme.textSecondary
+        case .labeling: return AppTheme.lightBlue
+        case .labeled: return AppTheme.text
+        case .failed: return Color.red.opacity(0.85)
+        case .renamed, .grouped: return AppTheme.success
         }
     }
 
@@ -256,15 +289,16 @@ struct ContentView: View {
         HStack(spacing: 12) {
             if session.isLabeling {
                 ProgressView(value: Double(session.progressCompleted), total: max(Double(session.progressTotal), 1))
+                    .tint(AppTheme.accent)
                     .frame(maxWidth: 220)
                 Text("\(session.progressCompleted)/\(session.progressTotal)")
                     .monospacedDigit()
-                    .foregroundStyle(.secondary)
+                    .foregroundStyle(AppTheme.textSecondary)
             }
 
             if let message = session.statusMessage {
                 Text(message)
-                    .foregroundStyle(.secondary)
+                    .foregroundStyle(AppTheme.textSecondary)
                     .lineLimit(2)
                     .help(message)
             }
@@ -275,19 +309,20 @@ struct ContentView: View {
                 Button("Rename Files…") {
                     session.prepareRenamePreview()
                 }
-                .buttonStyle(.borderedProminent)
+                .buttonStyle(AppPrimaryButtonStyle())
             }
 
             if let folder = session.folderURL {
                 Text(folder.path)
                     .font(.caption)
-                    .foregroundStyle(.tertiary)
+                    .foregroundStyle(AppTheme.textTertiary)
                     .lineLimit(1)
                     .truncationMode(.middle)
             }
         }
         .padding(.horizontal, 16)
         .padding(.vertical, 8)
+        .background(AppTheme.surface.opacity(0.95))
     }
 
     private var labelButtonHelp: String {

@@ -7,6 +7,10 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		A1PF0001BUILD0000000001 /* ProcessFolderModels.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1PF0001FILEREF00000001 /* ProcessFolderModels.swift */; };
+		A1PF0002BUILD0000000002 /* ProcessFolderSession.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1PF0002FILEREF00000002 /* ProcessFolderSession.swift */; };
+		A1PF0003BUILD0000000003 /* ProcessFolderFlowView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1PF0003FILEREF00000003 /* ProcessFolderFlowView.swift */; };
+		A1PF0004BUILD0000000004 /* AppTheme.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1PF0004FILEREF00000004 /* AppTheme.swift */; };
 		A6D5169B25F14CA898797A79 /* HomeLandingView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B009786A7CD84894A856A56B /* HomeLandingView.swift */; };
 		D0ACE7DDA268466FB7AC3007 /* FaceModels.swift in Sources */ = {isa = PBXBuildFile; fileRef = FE95759804574A48AB6980A6 /* FaceModels.swift */; };
 		0837F55D65694D92977D80A4 /* FaceDetectionService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 65F7D06F7B834952A3F91DFC /* FaceDetectionService.swift */; };
@@ -59,6 +63,10 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		A1PF0001FILEREF00000001 /* ProcessFolderModels.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProcessFolderModels.swift; sourceTree = "<group>"; };
+		A1PF0002FILEREF00000002 /* ProcessFolderSession.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProcessFolderSession.swift; sourceTree = "<group>"; };
+		A1PF0003FILEREF00000003 /* ProcessFolderFlowView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProcessFolderFlowView.swift; sourceTree = "<group>"; };
+		A1PF0004FILEREF00000004 /* AppTheme.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppTheme.swift; sourceTree = "<group>"; };
 		B009786A7CD84894A856A56B /* HomeLandingView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeLandingView.swift; sourceTree = "<group>"; };
 		FE95759804574A48AB6980A6 /* FaceModels.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FaceModels.swift; sourceTree = "<group>"; };
 		65F7D06F7B834952A3F91DFC /* FaceDetectionService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FaceDetectionService.swift; sourceTree = "<group>"; };
@@ -163,9 +171,18 @@
 			isa = PBXGroup;
 			children = (
 				F5E36A532E2D4C6FA3601838 /* FilenameSanitizer.swift */,
+				A1PF0004FILEREF00000004 /* AppTheme.swift */,
 				A8B7C6D5E4F37B6C2D1E0F73 /* MainCategoryMapper.swift */,
 			);
 			path = Utilities;
+			sourceTree = "<group>";
+		};
+		A1PF0005GROUP0000000005 /* ProcessFolder */ = {
+			isa = PBXGroup;
+			children = (
+				A1PF0003FILEREF00000003 /* ProcessFolderFlowView.swift */,
+			);
+			path = ProcessFolder;
 			sourceTree = "<group>";
 		};
 		C9BF2CAD026C4E04A4A6BC36 /* FaceRename */ = {
@@ -185,6 +202,7 @@
 			isa = PBXGroup;
 			children = (
 				FE95759804574A48AB6980A6 /* FaceModels.swift */,
+				A1PF0001FILEREF00000001 /* ProcessFolderModels.swift */,
 				63AC56FF1915437997674ED4 /* ImageItem.swift */,
 				B06D7246BE8645B7884EB039 /* SupportedImageTypes.swift */,
 			);
@@ -200,6 +218,7 @@
 				59EB96DFEC844AC1AD1006B1 /* FaceFilenameBuilder.swift */,
 				FDB75C6E48B84974899ADC22 /* FaceIdentityStore.swift */,
 				EA516BF310CD4904A4007DD2 /* FaceRenameSession.swift */,
+				A1PF0002FILEREF00000002 /* ProcessFolderSession.swift */,
 				C57F65381ED54A9A9780641A /* SettingsStore.swift */,
 				D5F4A3B2C1D04E3F9A8B7C67 /* ImageLabeling.swift */,
 				FA54677DABEB46449C1733AD /* VisionClient.swift */,
@@ -215,6 +234,7 @@
 			isa = PBXGroup;
 			children = (
 				B009786A7CD84894A856A56B /* HomeLandingView.swift */,
+				A1PF0005GROUP0000000005 /* ProcessFolder */,
 				C9BF2CAD026C4E04A4A6BC36 /* FaceRename */,
 				2E46A10AA91042B786961FFE /* ContentView.swift */,
 				CD2102691234436A9A704311 /* SettingsView.swift */,
@@ -325,6 +345,10 @@
 			buildActionMask = 2147483647;
 			files = (
 				A6D5169B25F14CA898797A79 /* HomeLandingView.swift in Sources */,
+				A1PF0001BUILD0000000001 /* ProcessFolderModels.swift in Sources */,
+				A1PF0002BUILD0000000002 /* ProcessFolderSession.swift in Sources */,
+				A1PF0003BUILD0000000003 /* ProcessFolderFlowView.swift in Sources */,
+				A1PF0004BUILD0000000004 /* AppTheme.swift in Sources */,
 				D0ACE7DDA268466FB7AC3007 /* FaceModels.swift in Sources */,
 				0837F55D65694D92977D80A4 /* FaceDetectionService.swift in Sources */,
 				510753FA9FCA4DF6B5C90307 /* FaceClusteringService.swift in Sources */,

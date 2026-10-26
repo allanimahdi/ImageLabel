@@ -44,7 +44,7 @@ struct FaceVerifyStepView: View {
         VStack(spacing: 12) {
             Image(systemName: "checkmark.circle.fill")
                 .font(.largeTitle)
-                .foregroundStyle(.green)
+                .foregroundStyle(AppTheme.success)
             Text("Sample verification complete")
                 .font(.headline)
             Text("Reprocess remaining faces, then review people or open the rename preview.")
@@ -78,7 +78,7 @@ struct FaceVerifyStepView: View {
                     Button("Confirm \(suggested)") {
                         faceSession.confirmSuggestedVerification(settings: settings)
                     }
-                    .buttonStyle(.borderedProminent)
+                    .buttonStyle(AppPrimaryButtonStyle())
                     .keyboardShortcut(.defaultAction)
                 }
             }
@@ -92,7 +92,7 @@ struct FaceVerifyStepView: View {
                 Button("Confirm") {
                     faceSession.confirmCurrentVerification(settings: settings)
                 }
-                .buttonStyle(.borderedProminent)
+                .buttonStyle(AppPrimaryButtonStyle())
                 .disabled(
                     faceSession.verificationDraftName
                         .trimmingCharacters(in: .whitespacesAndNewlines)

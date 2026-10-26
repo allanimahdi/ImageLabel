@@ -1,9 +1,10 @@
 import SwiftUI
 
-/// First-viewport home: brand + one short line + four large primary actions.
+/// First-viewport home: brand + Process Folder primary + secondary advanced actions.
 struct HomeLandingView: View {
     let labelingBackendLabel: String
     let canLabel: Bool
+    let onProcessFolder: () -> Void
     let onLabelAndRename: () -> Void
     let onAutoGroup: () -> Void
     let onRenameByFaces: () -> Void
@@ -11,11 +12,12 @@ struct HomeLandingView: View {
 
     var body: some View {
         ZStack {
-            atmosphere
+            AppTheme.atmosphereGradient.ignoresSafeArea()
             ScrollView {
-                VStack(alignment: .leading, spacing: 32) {
+                VStack(alignment: .leading, spacing: 28) {
                     brandBlock
-                    actionGrid
+                    primaryAction
+                    advancedSection
                 }
                 .frame(maxWidth: 720)
                 .padding(.horizontal, 36)
@@ -25,73 +27,107 @@ struct HomeLandingView: View {
         }
     }
 
-    private var atmosphere: some View {
-        LinearGradient(
-            colors: [
-                Color(nsColor: .windowBackgroundColor),
-                Color.accentColor.opacity(0.08),
-                Color(nsColor: .underPageBackgroundColor)
-            ],
-            startPoint: .topLeading,
-            endPoint: .bottomTrailing
-        )
-        .ignoresSafeArea()
-    }
-
     private var brandBlock: some View {
         VStack(alignment: .leading, spacing: 10) {
             Text("ImageLabel")
                 .font(.system(size: 42, weight: .bold, design: .rounded))
-                .foregroundStyle(.primary)
-            Text("Organize a folder of photos — label, rename, group, or rename by the people in them.")
+                .foregroundStyle(AppTheme.text)
+            Text("Process a folder in one pass — faces, labels, and groups.")
                 .font(.title3)
-                .foregroundStyle(.secondary)
+                .foregroundStyle(AppTheme.textSecondary)
                 .fixedSize(horizontal: false, vertical: true)
             Text(canLabel
                 ? "Labeling: \(labelingBackendLabel)"
                 : "Add Google credentials in Settings, or switch Labeling to Local.")
                 .font(.subheadline)
-                .foregroundStyle(canLabel ? Color.secondary : Color.orange)
+                .foregroundStyle(canLabel ? AppTheme.textSecondary : AppTheme.warning)
         }
     }
 
-    private var actionGrid: some View {
-        LazyVGrid(
-            columns: [
-                GridItem(.flexible(), spacing: 16),
-                GridItem(.flexible(), spacing: 16)
-            ],
-            spacing: 16
-        ) {
-            HomeActionButton(
-                title: "Label & Rename",
-                subtitle: "Vision labels → rename files to the top label",
-                systemImage: "tag.fill",
-                action: onLabelAndRename
-            )
-            HomeActionButton(
-                title: "Auto-Group into Folders",
-                subtitle: "Sort labeled photos into coarse category folders",
-                systemImage: "folder.badge.gearshape",
-                action: onAutoGroup
-            )
-            HomeActionButton(
-                title: "Rename by Faces",
-                subtitle: "On-device faces → name people → rename photos",
-                systemImage: "person.crop.rectangle.stack.fill",
-                action: onRenameByFaces
-            )
-            HomeActionButton(
-                title: "Settings",
-                subtitle: "Local or Google labeling, faces, credentials",
-                systemImage: "gearshape.fill",
-                action: onSettings
-            )
+    private var primaryAction: some View {
+        Button(action: onProcessFolder) {
+            HStack(alignment: .center, spacing: 18) {
+                Image(systemName: "folder.badge.gearshape")
+                    .font(.system(size: 36, weight: .semibold))
+                    .foregroundStyle(AppTheme.onAccent)
+                    .frame(width: 64, height: 64)
+                    .background {
+                        RoundedRectangle(cornerRadius: 14, style: .continuous)
+                            .fill(AppTheme.accent)
+                    }
+
+                VStack(alignment: .leading, spacing: 6) {
+                    Text("Process Folder")
+                        .font(.title.weight(.semibold))
+                        .foregroundStyle(AppTheme.text)
+                    Text("Select a folder → split by faces → rename people & label the rest into category folders.")
+                        .font(.body)
+                        .foregroundStyle(AppTheme.textSecondary)
+                        .fixedSize(horizontal: false, vertical: true)
+                }
+                Spacer(minLength: 0)
+                Image(systemName: "chevron.right")
+                    .font(.title3.weight(.semibold))
+                    .foregroundStyle(AppTheme.accent)
+            }
+            .padding(24)
+            .frame(maxWidth: .infinity, minHeight: 120, alignment: .leading)
+            .background {
+                RoundedRectangle(cornerRadius: 16, style: .continuous)
+                    .fill(AppTheme.surface)
+            }
+            .overlay {
+                RoundedRectangle(cornerRadius: 16, style: .continuous)
+                    .strokeBorder(AppTheme.borderStrong, lineWidth: 2)
+            }
+            .shadow(color: AppTheme.blueSlate.opacity(0.12), radius: 10, y: 4)
+        }
+        .buttonStyle(.plain)
+        .help("One-button workflow: faces + label & auto-group")
+    }
+
+    private var advancedSection: some View {
+        VStack(alignment: .leading, spacing: 12) {
+            Text("Advanced")
+                .font(.subheadline.weight(.semibold))
+                .foregroundStyle(AppTheme.textSecondary)
+            LazyVGrid(
+                columns: [
+                    GridItem(.flexible(), spacing: 12),
+                    GridItem(.flexible(), spacing: 12)
+                ],
+                spacing: 12
+            ) {
+                HomeSecondaryButton(
+                    title: "Label & Rename",
+                    subtitle: "Vision labels → rename files",
+                    systemImage: "tag.fill",
+                    action: onLabelAndRename
+                )
+                HomeSecondaryButton(
+                    title: "Auto-Group into Folders",
+                    subtitle: "Sort labeled photos into categories",
+                    systemImage: "folder.badge.gearshape",
+                    action: onAutoGroup
+                )
+                HomeSecondaryButton(
+                    title: "Rename by Faces",
+                    subtitle: "On-device faces → name → rename",
+                    systemImage: "person.crop.rectangle.stack.fill",
+                    action: onRenameByFaces
+                )
+                HomeSecondaryButton(
+                    title: "Settings",
+                    subtitle: "Local or Google labeling, faces",
+                    systemImage: "gearshape.fill",
+                    action: onSettings
+                )
+            }
         }
     }
 }
 
-private struct HomeActionButton: View {
+private struct HomeSecondaryButton: View {
     let title: String
     let subtitle: String
     let systemImage: String
@@ -101,45 +137,41 @@ private struct HomeActionButton: View {
 
     var body: some View {
         Button(action: action) {
-            HStack(alignment: .top, spacing: 14) {
+            HStack(alignment: .top, spacing: 12) {
                 Image(systemName: systemImage)
-                    .font(.system(size: 28, weight: .semibold))
-                    .foregroundStyle(Color.white)
-                    .frame(width: 48, height: 48)
+                    .font(.system(size: 20, weight: .semibold))
+                    .foregroundStyle(AppTheme.text)
+                    .frame(width: 36, height: 36)
                     .background {
-                        RoundedRectangle(cornerRadius: 12, style: .continuous)
-                            .fill(Color.accentColor)
+                        RoundedRectangle(cornerRadius: 8, style: .continuous)
+                            .fill(AppTheme.surfaceSecondary)
                     }
 
-                VStack(alignment: .leading, spacing: 4) {
+                VStack(alignment: .leading, spacing: 3) {
                     Text(title)
-                        .font(.title3.weight(.semibold))
-                        .foregroundStyle(.primary)
+                        .font(.body.weight(.semibold))
+                        .foregroundStyle(AppTheme.text)
                         .multilineTextAlignment(.leading)
                     Text(subtitle)
-                        .font(.callout)
-                        .foregroundStyle(.secondary)
+                        .font(.caption)
+                        .foregroundStyle(AppTheme.textSecondary)
                         .multilineTextAlignment(.leading)
                         .fixedSize(horizontal: false, vertical: true)
                 }
                 Spacer(minLength: 0)
             }
-            .padding(20)
-            .frame(maxWidth: .infinity, minHeight: 120, alignment: .leading)
+            .padding(14)
+            .frame(maxWidth: .infinity, minHeight: 72, alignment: .leading)
             .background {
-                RoundedRectangle(cornerRadius: 14, style: .continuous)
-                    .fill(Color(nsColor: .controlBackgroundColor))
-                    .overlay {
-                        RoundedRectangle(cornerRadius: 14, style: .continuous)
-                            .fill(Color.accentColor.opacity(0.08))
-                    }
+                RoundedRectangle(cornerRadius: 12, style: .continuous)
+                    .fill(hovering ? AppTheme.surfaceTertiary : AppTheme.surface)
             }
             .overlay {
-                RoundedRectangle(cornerRadius: 14, style: .continuous)
-                    .strokeBorder(Color.accentColor.opacity(0.4), lineWidth: 1.5)
+                RoundedRectangle(cornerRadius: 12, style: .continuous)
+                    .strokeBorder(AppTheme.border, lineWidth: 1)
             }
-            .shadow(color: .black.opacity(hovering ? 0.14 : 0.06), radius: hovering ? 12 : 5, y: hovering ? 5 : 2)
-            .scaleEffect(hovering ? 1.015 : 1)
+            .shadow(color: AppTheme.blueSlate.opacity(hovering ? 0.1 : 0.04), radius: hovering ? 8 : 3, y: 2)
+            .scaleEffect(hovering ? 1.01 : 1)
             .animation(.easeOut(duration: 0.15), value: hovering)
         }
         .buttonStyle(.plain)

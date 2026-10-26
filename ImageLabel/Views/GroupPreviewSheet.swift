@@ -24,17 +24,18 @@ struct GroupPreviewSheet: View {
         VStack(alignment: .leading, spacing: 0) {
             Text(title)
                 .font(.title2.bold())
+                .foregroundStyle(AppTheme.text)
                 .padding()
 
             Text(subtitle)
-                .foregroundStyle(.secondary)
+                .foregroundStyle(AppTheme.textSecondary)
                 .padding(.horizontal)
                 .padding(.bottom, 8)
 
             if session.groupPreviewIsAuto, !session.groupPreview.isEmpty {
                 Text(categorySummary)
                     .font(.caption)
-                    .foregroundStyle(.secondary)
+                    .foregroundStyle(AppTheme.textSecondary)
                     .padding(.horizontal)
                     .padding(.bottom, 8)
             }
@@ -58,7 +59,7 @@ struct GroupPreviewSheet: View {
 
             HStack {
                 Text("\(session.groupPreview.count) file\(session.groupPreview.count == 1 ? "" : "s")")
-                    .foregroundStyle(.secondary)
+                    .foregroundStyle(AppTheme.textSecondary)
                 Spacer()
                 Button("Cancel") {
                     session.showGroupPreview = false
@@ -70,12 +71,15 @@ struct GroupPreviewSheet: View {
                     dismiss()
                 }
                 .keyboardShortcut(.defaultAction)
-                .buttonStyle(.borderedProminent)
+                .buttonStyle(AppPrimaryButtonStyle())
                 .disabled(session.groupPreview.isEmpty)
             }
             .padding()
+            .background(AppTheme.surfaceSecondary.opacity(0.4))
         }
         .frame(minWidth: 720, minHeight: 440)
+        .background(AppTheme.eggshell)
+        .tint(AppTheme.accent)
     }
 
     private var autoTable: some View {

@@ -81,10 +81,13 @@ struct SettingsView: View {
         .formStyle(.grouped)
         .padding()
         .frame(minWidth: 520, minHeight: 420)
+        .background(AppTheme.eggshell)
+        .tint(AppTheme.accent)
         .navigationTitle("Settings")
         .toolbar {
             ToolbarItem(placement: .confirmationAction) {
                 Button("Done") { dismiss() }
+                    .buttonStyle(AppPrimaryButtonStyle())
             }
         }
         .onAppear { settings.refreshCredentialStatus() }

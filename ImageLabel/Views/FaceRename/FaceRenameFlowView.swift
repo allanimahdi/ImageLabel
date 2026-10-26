@@ -9,13 +9,16 @@ struct FaceRenameFlowView: View {
     var body: some View {
         VStack(spacing: 0) {
             header
-            Divider()
+            Rectangle().fill(AppTheme.border).frame(height: 1)
             stepContent
                 .frame(maxWidth: .infinity, maxHeight: .infinity)
-            Divider()
+                .background(AppTheme.background.opacity(0.9))
+            Rectangle().fill(AppTheme.border).frame(height: 1)
             footer
         }
         .frame(minWidth: 820, minHeight: 560)
+        .background(AppTheme.eggshell)
+        .tint(AppTheme.accent)
     }
 
     private var header: some View {
@@ -23,6 +26,7 @@ struct FaceRenameFlowView: View {
             HStack {
                 Text("Rename Photos by Faces")
                     .font(.title2.bold())
+                    .foregroundStyle(AppTheme.text)
                 Spacer()
                 Button("Close") {
                     faceSession.reset()
@@ -35,15 +39,16 @@ struct FaceRenameFlowView: View {
                         Image(systemName: step.rawValue < faceSession.step.rawValue
                               ? "checkmark.circle.fill"
                               : (step == faceSession.step ? "circle.inset.filled" : "circle"))
-                            .foregroundStyle(step.rawValue <= faceSession.step.rawValue ? Color.accentColor : Color.secondary)
+                            .foregroundStyle(step.rawValue <= faceSession.step.rawValue ? AppTheme.accent : AppTheme.textTertiary)
                         Text(step.title)
-                            .foregroundStyle(step == faceSession.step ? Color.primary : Color.secondary)
+                            .foregroundStyle(step == faceSession.step ? AppTheme.text : AppTheme.textSecondary)
                     }
                     .font(.callout)
                 }
             }
         }
         .padding()
+        .background(AppTheme.surfaceSecondary.opacity(0.45))
     }
 
     @ViewBuilder
@@ -66,14 +71,15 @@ struct FaceRenameFlowView: View {
         HStack {
             if faceSession.isBusy {
                 ProgressView(value: Double(faceSession.progressCompleted), total: max(Double(faceSession.progressTotal), 1))
+                    .tint(AppTheme.accent)
                     .frame(maxWidth: 200)
                 Text("\(faceSession.progressCompleted)/\(faceSession.progressTotal)")
                     .monospacedDigit()
-                    .foregroundStyle(.secondary)
+                    .foregroundStyle(AppTheme.textSecondary)
             }
             if let message = faceSession.statusMessage {
                 Text(message)
-                    .foregroundStyle(.secondary)
+                    .foregroundStyle(AppTheme.textSecondary)
                     .lineLimit(2)
                     .help(message)
             }
@@ -86,6 +92,7 @@ struct FaceRenameFlowView: View {
             stepButtons
         }
         .padding()
+        .background(AppTheme.surface.opacity(0.95))
     }
 
     @ViewBuilder
@@ -95,7 +102,7 @@ struct FaceRenameFlowView: View {
             Button("Detect & Group Faces") {
                 Task { await faceSession.startDetection(settings: settings) }
             }
-            .buttonStyle(.borderedProminent)
+            .buttonStyle(AppPrimaryButtonStyle())
             .disabled(faceSession.photoURLs.isEmpty || faceSession.isBusy)
         case .detect:
             EmptyView()
@@ -107,10 +114,10 @@ struct FaceRenameFlowView: View {
                 Button("Reprocess & Preview") {
                     faceSession.generatePreviewAfterVerification(settings: settings)
                 }
-                .buttonStyle(.borderedProminent)
+                .buttonStyle(AppPrimaryButtonStyle())
             } else {
                 Text("Confirm \(max(0, faceSession.requiredVerifications - faceSession.verifiedCount)) more")
-                    .foregroundStyle(.secondary)
+                    .foregroundStyle(AppTheme.textSecondary)
                     .font(.callout)
             }
         case .identify:
@@ -123,7 +130,7 @@ struct FaceRenameFlowView: View {
             Button("Generate Photo Names") {
                 faceSession.generatePhotoNames(settings: settings)
             }
-            .buttonStyle(.borderedProminent)
+            .buttonStyle(AppPrimaryButtonStyle())
             .disabled(faceSession.isBusy || faceSession.groups.isEmpty)
         case .preview:
             Button("Back to Identify") {
@@ -132,7 +139,7 @@ struct FaceRenameFlowView: View {
             Button("Rename All Photos") {
                 faceSession.applyRenames()
             }
-            .buttonStyle(.borderedProminent)
+            .buttonStyle(AppPrimaryButtonStyle())
             .disabled(faceSession.isBusy || !faceSession.previewRows.contains(where: \.include))
         }
     }

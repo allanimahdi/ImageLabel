@@ -7,24 +7,27 @@ struct FaceSelectStepView: View {
         VStack(spacing: 20) {
             Image(systemName: "person.crop.rectangle.stack")
                 .font(.system(size: 44))
-                .foregroundStyle(.secondary)
+                .foregroundStyle(AppTheme.accent)
             Text("Select photos to analyze")
                 .font(.title3)
+                .foregroundStyle(AppTheme.text)
             Text("Faces are detected and matched entirely on this Mac — photos are not uploaded.")
-                .foregroundStyle(.secondary)
+                .foregroundStyle(AppTheme.textSecondary)
                 .multilineTextAlignment(.center)
                 .frame(maxWidth: 420)
             HStack(spacing: 12) {
                 Button("Select Folder…") { faceSession.chooseFolder() }
+                    .buttonStyle(AppPrimaryButtonStyle())
                 Button("Select Photos…") { faceSession.chooseFiles() }
             }
             if faceSession.photoCount > 0 {
                 Text("\(faceSession.photoCount) photo\(faceSession.photoCount == 1 ? "" : "s") selected")
                     .font(.headline)
+                    .foregroundStyle(AppTheme.text)
                 if let folder = faceSession.folderURL {
                     Text(folder.path)
                         .font(.caption)
-                        .foregroundStyle(.tertiary)
+                        .foregroundStyle(AppTheme.textTertiary)
                         .lineLimit(2)
                         .truncationMode(.middle)
                 }

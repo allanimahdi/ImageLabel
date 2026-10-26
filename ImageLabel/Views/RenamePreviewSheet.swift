@@ -12,10 +12,11 @@ struct RenamePreviewSheet: View {
         VStack(alignment: .leading, spacing: 0) {
             Text("Rename to Top Labels")
                 .font(.title2.bold())
+                .foregroundStyle(AppTheme.text)
                 .padding()
 
             Text("Each file becomes its best-score Vision label only (no score in the filename). Collisions get _2, _3, … suffixes. Grouping by topic is a separate step.")
-                .foregroundStyle(.secondary)
+                .foregroundStyle(AppTheme.textSecondary)
                 .padding(.horizontal)
                 .padding(.bottom, 8)
 
@@ -48,7 +49,7 @@ struct RenamePreviewSheet: View {
                 Text(changeCount == 0
                     ? "All names already match top labels."
                     : "\(changeCount) of \(session.renamePreview.count) will be renamed on disk")
-                    .foregroundStyle(.secondary)
+                    .foregroundStyle(AppTheme.textSecondary)
                 Spacer()
                 Button("Not Now") {
                     session.showRenamePreview = false
@@ -60,11 +61,14 @@ struct RenamePreviewSheet: View {
                     dismiss()
                 }
                 .keyboardShortcut(.defaultAction)
-                .buttonStyle(.borderedProminent)
+                .buttonStyle(AppPrimaryButtonStyle())
                 .disabled(changeCount == 0)
             }
             .padding()
+            .background(AppTheme.surfaceSecondary.opacity(0.4))
         }
         .frame(minWidth: 640, minHeight: 420)
+        .background(AppTheme.eggshell)
+        .tint(AppTheme.accent)
     }
 }
