@@ -17,21 +17,23 @@ Signing: with Automatic signing, pick your Team under the ImageLabel target → 
 
 You need an existing Google Cloud project with the **Cloud Vision API** enabled.
 
+Pick **one** mode in Settings — do not mix them (an API key is not a JSON key file, and vice versa).
+
 ### Option A — API key (simplest)
 
 1. In [Google Cloud Console](https://console.cloud.google.com/) → APIs & Services → Credentials, create an **API key**.
 2. Restrict it to the Vision API if you can.
-3. In ImageLabel: **Settings** (gear) or **ImageLabel → Settings…** (⌘,), choose **API Key**, paste the key.
+3. In ImageLabel: **Settings** (gear) or **ImageLabel → Settings…** (⌘,), choose **API Key**, paste the key only (the `AIza…` string).
 
-The key is stored in the macOS **Keychain**, not in the repo.
+The key is stored in the macOS **Keychain**, not in the repo. API-key mode never creates an RSA private key.
 
 ### Option B — Service account JSON
 
 1. Create a service account with permission to call Vision (e.g. **Cloud Vision AI User** / Vision-related role).
-2. Download a JSON key file — keep it **outside** this repository.
-3. In Settings, choose **Service Account JSON** and browse to that file.
+2. Download a JSON key file (`"type": "service_account"`) — keep it **outside** this repository.
+3. In Settings, choose **Service Account JSON** and **Browse…** to that file (prefer Browse so sandbox access is remembered).
 
-The app stores only the **file path** in preferences. `.gitignore` already excludes common credential filenames — never commit keys or JSON secrets.
+The app stores only the **file path** in preferences. `.gitignore` already excludes common credential filenames — never commit keys or JSON secrets. Settings shows a status line (service-account email or a clear error) without printing secrets.
 
 ## How to use
 

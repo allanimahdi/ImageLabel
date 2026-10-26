@@ -1,4 +1,5 @@
 import Foundation
+import Security
 
 enum VisionAuth {
     case apiKey(String)
@@ -80,6 +81,7 @@ actor VisionClient {
     private func makeAnnotateRequest() async throws -> URLRequest {
         switch auth {
         case .apiKey(let key):
+            // API-key auth never touches RSA / JWT.
             var components = URLComponents(string: "https://vision.googleapis.com/v1/images:annotate")!
             components.queryItems = [URLQueryItem(name: "key", value: key)]
             return URLRequest(url: components.url!)
@@ -96,10 +98,7 @@ actor VisionClient {
             return cached.token
         }
 
-        let credentials = try JSONDecoder().decode(
-            ServiceAccountCredentials.self,
-            from: Data(contentsOf: serviceAccountURL)
-        )
+        let credentials = try ServiceAccountCredentials.load(from: serviceAccountURL)
         let now = Date()
         let claims: [String: Any] = [
             "iss": credentials.clientEmail,
@@ -130,6 +129,88 @@ actor VisionClient {
     }
 }
 
+// MARK: - Service account JSON
+
+/// Parsed Google Cloud service-account key (values are never logged).
+struct ServiceAccountCredentials: Equatable {
+    let clientEmail: String
+    let privateKey: String
+    let tokenURI: String
+
+    /// Loads and validates a downloaded service-account JSON key file.
+    static func load(from url: URL) throws -> ServiceAccountCredentials {
+        let data: Data
+        do {
+            data = try Data(contentsOf: url)
+        } catch {
+            throw VisionError.serviceAccount(
+                "Could not read the service-account file. Use Browse… in Settings so sandbox access is granted."
+            )
+        }
+        return try load(from: data)
+    }
+
+    static func load(from data: Data) throws -> ServiceAccountCredentials {
+        let trimmed = String(data: data, encoding: .utf8)?
+            .trimmingCharacters(in: .whitespacesAndNewlines) ?? ""
+
+        if trimmed.hasPrefix("AIza") || looksLikeAPIKeyOnly(trimmed) {
+            throw VisionError.serviceAccount(
+                "This looks like an API key, not a service-account JSON file. In Settings, choose “API Key” and paste the key there — or download a service-account key JSON from Google Cloud."
+            )
+        }
+
+        guard let root = try? JSONSerialization.jsonObject(with: data) as? [String: Any] else {
+            throw VisionError.serviceAccount(
+                "The selected file is not valid JSON. Choose the service-account key file downloaded from Google Cloud (type: service_account)."
+            )
+        }
+
+        if root["installed"] != nil || root["web"] != nil {
+            throw VisionError.serviceAccount(
+                "This looks like an OAuth client secret JSON, not a service-account key. In Google Cloud → IAM → Service accounts, create a key and download that JSON — or use an API key instead."
+            )
+        }
+
+        if let type = root["type"] as? String, type != "service_account" {
+            throw VisionError.serviceAccount(
+                "JSON type is “\(type)”, expected “service_account”. Download a service-account key, or switch Settings to API Key."
+            )
+        }
+
+        guard
+            let email = root["client_email"] as? String, !email.isEmpty,
+            let privateKey = root["private_key"] as? String, !privateKey.isEmpty,
+            let tokenURI = root["token_uri"] as? String, !tokenURI.isEmpty
+        else {
+            throw VisionError.serviceAccount(
+                "Missing client_email, private_key, or token_uri. Use a Google Cloud service-account key JSON (not an API key string)."
+            )
+        }
+
+        guard privateKey.contains("BEGIN") && privateKey.contains("PRIVATE KEY") else {
+            throw VisionError.serviceAccount(
+                "private_key is missing PEM headers. Re-download the service-account key from Google Cloud."
+            )
+        }
+
+        // Fail fast if the key cannot be imported (avoids cryptic OSStatus later).
+        _ = try RSAKey(pem: privateKey)
+
+        return ServiceAccountCredentials(
+            clientEmail: email,
+            privateKey: privateKey,
+            tokenURI: tokenURI
+        )
+    }
+
+    private static func looksLikeAPIKeyOnly(_ text: String) -> Bool {
+        // Single-line secret with no JSON structure.
+        !text.contains("{") && !text.contains("\"") && text.count >= 20 && text.count <= 128
+            && text.unicodeScalars.allSatisfy { CharacterSet.alphanumerics.contains($0) || $0 == "-" || $0 == "_" }
+    }
+}
+
 // MARK: - API models
 
 private struct AnnotateResponse: Decodable {
@@ -148,18 +229,6 @@ private struct AnnotateResponse: Decodable {
     let responses: [Response]
 }
 
-private struct ServiceAccountCredentials: Decodable {
-    let clientEmail: String
-    let privateKey: String
-    let tokenURI: String
-
-    enum CodingKeys: String, CodingKey {
-        case clientEmail = "client_email"
-        case privateKey = "private_key"
-        case tokenURI = "token_uri"
-    }
-}
-
 private struct TokenResponse: Decodable {
     let accessToken: String
     let expiresIn: Int?
@@ -172,7 +241,7 @@ private struct TokenResponse: Decodable {
 
 // MARK: - Minimal JWT (RS256) for service accounts
 
-private enum JWT {
+enum JWT {
     static func sign(claims: [String: Any], privateKeyPEM: String) throws -> String {
         let header = ["alg": "RS256", "typ": "JWT"]
         let headerData = try JSONSerialization.data(withJSONObject: header)
@@ -192,22 +261,48 @@ private enum JWT {
     }
 }
 
-/// Thin SecKey wrapper for PKCS#8 RSA private keys from Google service-account JSON.
-private struct RSAKey {
+// MARK: - RSA private key import (PKCS#8 + PKCS#1)
+
+/// Imports Google service-account private keys for JWT signing.
+///
+/// Google JSON keys use PKCS#8 (`BEGIN PRIVATE KEY`). `SecKeyCreateWithData` only
+/// accepts the inner PKCS#1 `RSAPrivateKey` DER — passing PKCS#8 yields OSStatus -50
+/// ("RSA private key creation from data failed").
+struct RSAKey {
     let secKey: SecKey
 
     init(pem: String) throws {
-        let stripped = pem
-            .replacingOccurrences(of: "-----BEGIN PRIVATE KEY-----", with: "")
-            .replacingOccurrences(of: "-----END PRIVATE KEY-----", with: "")
-            .replacingOccurrences(of: "-----BEGIN RSA PRIVATE KEY-----", with: "")
-            .replacingOccurrences(of: "-----END RSA PRIVATE KEY-----", with: "")
-            .replacingOccurrences(of: "\\n", with: "")
-            .replacingOccurrences(of: "\n", with: "")
+        let normalized = pem
+            .replacingOccurrences(of: "\\n", with: "\n")
             .trimmingCharacters(in: .whitespacesAndNewlines)
 
-        guard let der = Data(base64Encoded: stripped) else {
-            throw VisionError.serviceAccount("Invalid private key encoding.")
+        let format: PEMFormat
+        if normalized.contains("BEGIN RSA PRIVATE KEY") {
+            format = .pkcs1
+        } else if normalized.contains("BEGIN PRIVATE KEY") {
+            format = .pkcs8
+        } else {
+            throw VisionError.serviceAccount(
+                "Unrecognized private key PEM. Expected a Google service-account key (BEGIN PRIVATE KEY)."
+            )
+        }
+
+        guard let der = Self.derBody(from: normalized) else {
+            throw VisionError.serviceAccount("Invalid private key encoding (base64).")
+        }
+
+        let rsaDER: Data
+        switch format {
+        case .pkcs1:
+            rsaDER = der
+        case .pkcs8:
+            do {
+                rsaDER = try Self.rsaPrivateKeyDER(fromPKCS8: der)
+            } catch {
+                throw VisionError.serviceAccount(
+                    "Could not read PKCS#8 private key. Re-download the service-account JSON from Google Cloud."
+                )
+            }
         }
 
         let attributes: [String: Any] = [
@@ -215,9 +310,12 @@ private struct RSAKey {
             kSecAttrKeyClass as String: kSecAttrKeyClassPrivate
         ]
         var error: Unmanaged<CFError>?
-        guard let key = SecKeyCreateWithData(der as CFData, attributes as CFDictionary, &error) else {
-            let message = error?.takeRetainedValue().localizedDescription ?? "SecKey create failed"
-            throw VisionError.serviceAccount(message)
+        guard let key = SecKeyCreateWithData(rsaDER as CFData, attributes as CFDictionary, &error) else {
+            // Never include key material in the message.
+            _ = error?.takeRetainedValue()
+            throw VisionError.serviceAccount(
+                "Could not import the RSA private key. Confirm Settings uses a service-account JSON key (not an API key), then try again."
+            )
         }
         self.secKey = key
     }
@@ -230,9 +328,82 @@ private struct RSAKey {
             data as CFData,
             &error
         ) as Data? else {
-            let message = error?.takeRetainedValue().localizedDescription ?? "Sign failed"
-            throw VisionError.serviceAccount(message)
+            _ = error?.takeRetainedValue()
+            throw VisionError.serviceAccount("Failed to sign the service-account JWT.")
         }
         return signature
+    }
+
+    private enum PEMFormat {
+        case pkcs1
+        case pkcs8
+    }
+
+    private static func derBody(from pem: String) -> Data? {
+        let stripped = pem
+            .replacingOccurrences(of: "-----BEGIN PRIVATE KEY-----", with: "")
+            .replacingOccurrences(of: "-----END PRIVATE KEY-----", with: "")
+            .replacingOccurrences(of: "-----BEGIN RSA PRIVATE KEY-----", with: "")
+            .replacingOccurrences(of: "-----END RSA PRIVATE KEY-----", with: "")
+            .replacingOccurrences(of: "\r", with: "")
+            .replacingOccurrences(of: "\n", with: "")
+            .replacingOccurrences(of: " ", with: "")
+            .trimmingCharacters(in: .whitespacesAndNewlines)
+        return Data(base64Encoded: stripped)
+    }
+
+    /// Unwraps PrivateKeyInfo (PKCS#8) → RSAPrivateKey DER for SecKeyCreateWithData.
+    static func rsaPrivateKeyDER(fromPKCS8 pkcs8: Data) throws -> Data {
+        var index = pkcs8.startIndex
+
+        func readLength(_ i: inout Data.Index) throws -> Int {
+            guard i < pkcs8.endIndex else {
+                throw VisionError.serviceAccount("Truncated PKCS#8 key.")
+            }
+            let first = Int(pkcs8[i])
+            i = pkcs8.index(after: i)
+            if first & 0x80 == 0 { return first }
+            let byteCount = first & 0x7F
+            guard byteCount > 0, byteCount <= 4 else {
+                throw VisionError.serviceAccount("Invalid PKCS#8 length.")
+            }
+            var length = 0
+            for _ in 0..<byteCount {
+                guard i < pkcs8.endIndex else {
+                    throw VisionError.serviceAccount("Truncated PKCS#8 key.")
+                }
+                length = (length << 8) | Int(pkcs8[i])
+                i = pkcs8.index(after: i)
+            }
+            return length
+        }
+
+        func expectTag(_ tag: UInt8, _ i: inout Data.Index) throws -> Int {
+            guard i < pkcs8.endIndex, pkcs8[i] == tag else {
+                throw VisionError.serviceAccount("Unexpected PKCS#8 structure.")
+            }
+            i = pkcs8.index(after: i)
+            return try readLength(&i)
+        }
+
+        // PrivateKeyInfo ::= SEQUENCE { version, algorithm, privateKey OCTET STRING, ... }
+        _ = try expectTag(0x30, &index)
+        let versionLen = try expectTag(0x02, &index)
+        guard pkcs8.distance(from: index, to: pkcs8.endIndex) >= versionLen else {
+            throw VisionError.serviceAccount("Truncated PKCS#8 key.")
+        }
+        index = pkcs8.index(index, offsetBy: versionLen)
+
+        let algorithmLen = try expectTag(0x30, &index)
+        guard pkcs8.distance(from: index, to: pkcs8.endIndex) >= algorithmLen else {
+            throw VisionError.serviceAccount("Truncated PKCS#8 key.")
+        }
+        index = pkcs8.index(index, offsetBy: algorithmLen)
+
+        let keyLen = try expectTag(0x04, &index)
+        guard pkcs8.distance(from: index, to: pkcs8.endIndex) >= keyLen else {
+            throw VisionError.serviceAccount("Truncated PKCS#8 key.")
+        }
+        return Data(pkcs8[index..<pkcs8.index(index, offsetBy: keyLen)])
     }
 }

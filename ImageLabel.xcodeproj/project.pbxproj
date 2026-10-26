@@ -7,42 +7,54 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		FB82D96BD41D422C95218B2E /* ImageLabelApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = C52BA110FB134B33BA85776B /* ImageLabelApp.swift */; };
-		538CAC36ACAF49C282318241 /* ImageItem.swift in Sources */ = {isa = PBXBuildFile; fileRef = 63AC56FF1915437997674ED4 /* ImageItem.swift */; };
-		B863C9B8F5CC47BE9261FE49 /* SupportedImageTypes.swift in Sources */ = {isa = PBXBuildFile; fileRef = B06D7246BE8645B7884EB039 /* SupportedImageTypes.swift */; };
-		43C60399957E418A8B7F48C4 /* FilenameSanitizer.swift in Sources */ = {isa = PBXBuildFile; fileRef = F5E36A532E2D4C6FA3601838 /* FilenameSanitizer.swift */; };
 		07E05713051B4FE699523F00 /* SettingsStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = C57F65381ED54A9A9780641A /* SettingsStore.swift */; };
-		3DD3653DF4FD4AA4BF6F57F9 /* VisionClient.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA54677DABEB46449C1733AD /* VisionClient.swift */; };
-		39688F2AA6934BCDBB4DE7B4 /* FileOperations.swift in Sources */ = {isa = PBXBuildFile; fileRef = 64DFE574D7E14E6C9F8243A0 /* FileOperations.swift */; };
-		62AB5253CEE14D04A2504B57 /* LabelingSession.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2AC879E02F9D4A44A9E1114F /* LabelingSession.swift */; };
-		2FC97DEEE72C40D4805FAD28 /* ImageDataLoader.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5428B83B97A841C88698306E /* ImageDataLoader.swift */; };
-		DB9BB522568849CC804131C9 /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2E46A10AA91042B786961FFE /* ContentView.swift */; };
-		BEE688A974D24FD79E4F0E2B /* SettingsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = CD2102691234436A9A704311 /* SettingsView.swift */; };
-		66D12C76AE5240EBA417368F /* RenamePreviewSheet.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8369A29FB59D4613B071E683 /* RenamePreviewSheet.swift */; };
-		472DFDD8FC9C4330B3AC5F36 /* GroupPreviewSheet.swift in Sources */ = {isa = PBXBuildFile; fileRef = B9ED8ECDC4384E38AFADD95B /* GroupPreviewSheet.swift */; };
-		6A78678993DF4346AAFB6810 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = A594DA37E2C0424FA3D1D4AC /* Assets.xcassets */; };
 		0FEF702FDB614C97986E9257 /* FilenameSanitizerTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 15EF72A14F5D4B37AEB3BA34 /* FilenameSanitizerTests.swift */; };
+		A2C1D0E1F2A34B5C9D8E7F60 /* CredentialCryptoTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = A2C1D0E1F2A34B5C9D8E7F61 /* CredentialCryptoTests.swift */; };
+		2FC97DEEE72C40D4805FAD28 /* ImageDataLoader.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5428B83B97A841C88698306E /* ImageDataLoader.swift */; };
+		39688F2AA6934BCDBB4DE7B4 /* FileOperations.swift in Sources */ = {isa = PBXBuildFile; fileRef = 64DFE574D7E14E6C9F8243A0 /* FileOperations.swift */; };
+		3DD3653DF4FD4AA4BF6F57F9 /* VisionClient.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA54677DABEB46449C1733AD /* VisionClient.swift */; };
+		43C60399957E418A8B7F48C4 /* FilenameSanitizer.swift in Sources */ = {isa = PBXBuildFile; fileRef = F5E36A532E2D4C6FA3601838 /* FilenameSanitizer.swift */; };
+		472DFDD8FC9C4330B3AC5F36 /* GroupPreviewSheet.swift in Sources */ = {isa = PBXBuildFile; fileRef = B9ED8ECDC4384E38AFADD95B /* GroupPreviewSheet.swift */; };
+		538CAC36ACAF49C282318241 /* ImageItem.swift in Sources */ = {isa = PBXBuildFile; fileRef = 63AC56FF1915437997674ED4 /* ImageItem.swift */; };
+		62AB5253CEE14D04A2504B57 /* LabelingSession.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2AC879E02F9D4A44A9E1114F /* LabelingSession.swift */; };
+		66D12C76AE5240EBA417368F /* RenamePreviewSheet.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8369A29FB59D4613B071E683 /* RenamePreviewSheet.swift */; };
+		6A78678993DF4346AAFB6810 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = A594DA37E2C0424FA3D1D4AC /* Assets.xcassets */; };
+		B863C9B8F5CC47BE9261FE49 /* SupportedImageTypes.swift in Sources */ = {isa = PBXBuildFile; fileRef = B06D7246BE8645B7884EB039 /* SupportedImageTypes.swift */; };
+		BEE688A974D24FD79E4F0E2B /* SettingsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = CD2102691234436A9A704311 /* SettingsView.swift */; };
+		DB9BB522568849CC804131C9 /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2E46A10AA91042B786961FFE /* ContentView.swift */; };
+		FB82D96BD41D422C95218B2E /* ImageLabelApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = C52BA110FB134B33BA85776B /* ImageLabelApp.swift */; };
 /* End PBXBuildFile section */
 
+/* Begin PBXContainerItemProxy section */
+		203BCB8342F548A59A52F722 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 100771A40061402D8C067DBA /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 0CBC14B037354244AD02B01D;
+			remoteInfo = ImageLabel;
+		};
+/* End PBXContainerItemProxy section */
+
 /* Begin PBXFileReference section */
-		D7F888E167E448949486EB33 /* ImageLabel.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = ImageLabel.app; sourceTree = BUILT_PRODUCTS_DIR; };
-		C52BA110FB134B33BA85776B /* ImageLabelApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ImageLabelApp.swift; sourceTree = "<group>"; };
-		63AC56FF1915437997674ED4 /* ImageItem.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ImageItem.swift; sourceTree = "<group>"; };
-		B06D7246BE8645B7884EB039 /* SupportedImageTypes.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SupportedImageTypes.swift; sourceTree = "<group>"; };
-		F5E36A532E2D4C6FA3601838 /* FilenameSanitizer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FilenameSanitizer.swift; sourceTree = "<group>"; };
-		C57F65381ED54A9A9780641A /* SettingsStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsStore.swift; sourceTree = "<group>"; };
-		FA54677DABEB46449C1733AD /* VisionClient.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VisionClient.swift; sourceTree = "<group>"; };
-		64DFE574D7E14E6C9F8243A0 /* FileOperations.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FileOperations.swift; sourceTree = "<group>"; };
-		2AC879E02F9D4A44A9E1114F /* LabelingSession.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LabelingSession.swift; sourceTree = "<group>"; };
-		5428B83B97A841C88698306E /* ImageDataLoader.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ImageDataLoader.swift; sourceTree = "<group>"; };
-		2E46A10AA91042B786961FFE /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
-		CD2102691234436A9A704311 /* SettingsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsView.swift; sourceTree = "<group>"; };
-		8369A29FB59D4613B071E683 /* RenamePreviewSheet.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RenamePreviewSheet.swift; sourceTree = "<group>"; };
-		B9ED8ECDC4384E38AFADD95B /* GroupPreviewSheet.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GroupPreviewSheet.swift; sourceTree = "<group>"; };
-		A594DA37E2C0424FA3D1D4AC /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
-		30AC92CAEC744BEB9F0FDCCA /* ImageLabel.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = ImageLabel.entitlements; sourceTree = "<group>"; };
 		15EF72A14F5D4B37AEB3BA34 /* FilenameSanitizerTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FilenameSanitizerTests.swift; sourceTree = "<group>"; };
+		A2C1D0E1F2A34B5C9D8E7F61 /* CredentialCryptoTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CredentialCryptoTests.swift; sourceTree = "<group>"; };
+		2AC879E02F9D4A44A9E1114F /* LabelingSession.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LabelingSession.swift; sourceTree = "<group>"; };
+		2E46A10AA91042B786961FFE /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
+		30AC92CAEC744BEB9F0FDCCA /* ImageLabel.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = ImageLabel.entitlements; sourceTree = "<group>"; };
+		5428B83B97A841C88698306E /* ImageDataLoader.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ImageDataLoader.swift; sourceTree = "<group>"; };
+		63AC56FF1915437997674ED4 /* ImageItem.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ImageItem.swift; sourceTree = "<group>"; };
+		64DFE574D7E14E6C9F8243A0 /* FileOperations.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FileOperations.swift; sourceTree = "<group>"; };
+		8369A29FB59D4613B071E683 /* RenamePreviewSheet.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RenamePreviewSheet.swift; sourceTree = "<group>"; };
+		A594DA37E2C0424FA3D1D4AC /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
+		B06D7246BE8645B7884EB039 /* SupportedImageTypes.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SupportedImageTypes.swift; sourceTree = "<group>"; };
 		B630E42632F041BBBB571EAD /* ImageLabelTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = ImageLabelTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		B9ED8ECDC4384E38AFADD95B /* GroupPreviewSheet.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GroupPreviewSheet.swift; sourceTree = "<group>"; };
+		C52BA110FB134B33BA85776B /* ImageLabelApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ImageLabelApp.swift; sourceTree = "<group>"; };
+		C57F65381ED54A9A9780641A /* SettingsStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsStore.swift; sourceTree = "<group>"; };
+		CD2102691234436A9A704311 /* SettingsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsView.swift; sourceTree = "<group>"; };
+		D7F888E167E448949486EB33 /* ImageLabel.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = ImageLabel.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		F5E36A532E2D4C6FA3601838 /* FilenameSanitizer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FilenameSanitizer.swift; sourceTree = "<group>"; };
+		FA54677DABEB46449C1733AD /* VisionClient.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VisionClient.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -63,6 +75,15 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		5114CB65A714430F8C3F7672 /* ImageLabelTests */ = {
+			isa = PBXGroup;
+			children = (
+				15EF72A14F5D4B37AEB3BA34 /* FilenameSanitizerTests.swift */,
+				A2C1D0E1F2A34B5C9D8E7F61 /* CredentialCryptoTests.swift */,
+			);
+			path = ImageLabelTests;
+			sourceTree = "<group>";
+		};
 		75D6AC6401D64907A49F78E1 = {
 			isa = PBXGroup;
 			children = (
@@ -70,15 +91,6 @@
 				5114CB65A714430F8C3F7672 /* ImageLabelTests */,
 				C4F1050888FD419C84E0A386 /* Products */,
 			);
-			sourceTree = "<group>";
-		};
-		C4F1050888FD419C84E0A386 /* Products */ = {
-			isa = PBXGroup;
-			children = (
-				D7F888E167E448949486EB33 /* ImageLabel.app */,
-				B630E42632F041BBBB571EAD /* ImageLabelTests.xctest */,
-			);
-			name = Products;
 			sourceTree = "<group>";
 		};
 		7943741CB527479DB4864265 /* ImageLabel */ = {
@@ -93,6 +105,14 @@
 				30AC92CAEC744BEB9F0FDCCA /* ImageLabel.entitlements */,
 			);
 			path = ImageLabel;
+			sourceTree = "<group>";
+		};
+		A11A07115000000000000001 /* Utilities */ = {
+			isa = PBXGroup;
+			children = (
+				F5E36A532E2D4C6FA3601838 /* FilenameSanitizer.swift */,
+			);
+			path = Utilities;
 			sourceTree = "<group>";
 		};
 		A11A0DE15000000000000001 /* Models */ = {
@@ -127,20 +147,13 @@
 			path = Views;
 			sourceTree = "<group>";
 		};
-		A11A07115000000000000001 /* Utilities */ = {
+		C4F1050888FD419C84E0A386 /* Products */ = {
 			isa = PBXGroup;
 			children = (
-				F5E36A532E2D4C6FA3601838 /* FilenameSanitizer.swift */,
+				D7F888E167E448949486EB33 /* ImageLabel.app */,
+				B630E42632F041BBBB571EAD /* ImageLabelTests.xctest */,
 			);
-			path = Utilities;
-			sourceTree = "<group>";
-		};
-		5114CB65A714430F8C3F7672 /* ImageLabelTests */ = {
-			isa = PBXGroup;
-			children = (
-				15EF72A14F5D4B37AEB3BA34 /* FilenameSanitizerTests.swift */,
-			);
-			path = ImageLabelTests;
+			name = Products;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -188,6 +201,7 @@
 			attributes = {
 				BuildIndependentTargetsInParallel = 1;
 				LastSwiftUpdateCheck = 1500;
+				LastUpgradeCheck = 1500;
 				TargetAttributes = {
 					0CBC14B037354244AD02B01D = {
 						CreatedOnToolsVersion = 15.0;
@@ -197,7 +211,6 @@
 						TestTargetID = 0CBC14B037354244AD02B01D;
 					};
 				};
-				LastUpgradeCheck = 1500;
 			};
 			buildConfigurationList = 8471640763214850A15AFB41 /* Build configuration list for PBXProject "ImageLabel" */;
 			compatibilityVersion = "Xcode 14.0";
@@ -255,6 +268,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				0FEF702FDB614C97986E9257 /* FilenameSanitizerTests.swift in Sources */,
+				A2C1D0E1F2A34B5C9D8E7F60 /* CredentialCryptoTests.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -268,17 +282,77 @@
 		};
 /* End PBXTargetDependency section */
 
-/* Begin PBXContainerItemProxy section */
-		203BCB8342F548A59A52F722 /* PBXContainerItemProxy */ = {
-			isa = PBXContainerItemProxy;
-			containerPortal = 100771A40061402D8C067DBA /* Project object */;
-			proxyType = 1;
-			remoteGlobalIDString = 0CBC14B037354244AD02B01D;
-			remoteInfo = ImageLabel;
-		};
-/* End PBXContainerItemProxy section */
-
 /* Begin XCBuildConfiguration section */
+		14ED4DCFBF2346E593C9A3CA /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				MACOSX_DEPLOYMENT_TARGET = 14.0;
+				SDKROOT = macosx;
+				SWIFT_COMPILATION_MODE = wholemodule;
+				SWIFT_OPTIMIZATION_LEVEL = "-O";
+			};
+			name = Release;
+		};
+		36C069ADD5CD4D19982E945C /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				GENERATE_INFOPLIST_FILE = YES;
+				MACOSX_DEPLOYMENT_TARGET = 14.0;
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.imagelabel.tests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_VERSION = 5.0;
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/ImageLabel.app/Contents/MacOS/ImageLabel";
+			};
+			name = Release;
+		};
+		D348745FEBEB453DA8962002 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CODE_SIGN_ENTITLEMENTS = ImageLabel/ImageLabel.entitlements;
+				"CODE_SIGN_IDENTITY[sdk=macosx*]" = "-";
+				CODE_SIGN_STYLE = Automatic;
+				COMBINE_HIDPI_IMAGES = YES;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = 6XU24ABSWS;
+				ENABLE_APP_SANDBOX = YES;
+				ENABLE_HARDENED_RUNTIME = YES;
+				ENABLE_INCOMING_NETWORK_CONNECTIONS = YES;
+				ENABLE_OUTGOING_NETWORK_CONNECTIONS = NO;
+				ENABLE_RESOURCE_ACCESS_AUDIO_INPUT = NO;
+				ENABLE_RESOURCE_ACCESS_BLUETOOTH = NO;
+				ENABLE_RESOURCE_ACCESS_CALENDARS = NO;
+				ENABLE_RESOURCE_ACCESS_CAMERA = NO;
+				ENABLE_RESOURCE_ACCESS_CONTACTS = NO;
+				ENABLE_RESOURCE_ACCESS_LOCATION = NO;
+				ENABLE_RESOURCE_ACCESS_PRINTING = NO;
+				ENABLE_RESOURCE_ACCESS_USB = NO;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_KEY_CFBundleDisplayName = ImageLabel;
+				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.photography";
+				INFOPLIST_KEY_NSHumanReadableCopyright = "";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/../Frameworks",
+				);
+				MACOSX_DEPLOYMENT_TARGET = 14.0;
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.imagelabel.app;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_VERSION = 5.0;
+			};
+			name = Debug;
+		};
 		D3545D1CBEB144429C7FBEB4 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
@@ -298,73 +372,6 @@
 			};
 			name = Debug;
 		};
-		14ED4DCFBF2346E593C9A3CA /* Release */ = {
-			isa = XCBuildConfiguration;
-			buildSettings = {
-				ALWAYS_SEARCH_USER_PATHS = NO;
-				CLANG_ENABLE_MODULES = YES;
-				CLANG_ENABLE_OBJC_ARC = YES;
-				COPY_PHASE_STRIP = NO;
-				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
-				MACOSX_DEPLOYMENT_TARGET = 14.0;
-				SDKROOT = macosx;
-				SWIFT_COMPILATION_MODE = wholemodule;
-				SWIFT_OPTIMIZATION_LEVEL = "-O";
-			};
-			name = Release;
-		};
-		D348745FEBEB453DA8962002 /* Debug */ = {
-			isa = XCBuildConfiguration;
-			buildSettings = {
-				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
-				CODE_SIGN_ENTITLEMENTS = ImageLabel/ImageLabel.entitlements;
-				CODE_SIGN_STYLE = Automatic;
-				COMBINE_HIDPI_IMAGES = YES;
-				CURRENT_PROJECT_VERSION = 1;
-				ENABLE_HARDENED_RUNTIME = YES;
-				GENERATE_INFOPLIST_FILE = YES;
-				INFOPLIST_KEY_CFBundleDisplayName = ImageLabel;
-				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.photography";
-				INFOPLIST_KEY_NSHumanReadableCopyright = "";
-				LD_RUNPATH_SEARCH_PATHS = (
-					"$(inherited)",
-					"@executable_path/../Frameworks",
-				);
-				MACOSX_DEPLOYMENT_TARGET = 14.0;
-				MARKETING_VERSION = 1.0;
-				PRODUCT_BUNDLE_IDENTIFIER = com.imagelabel.app;
-				PRODUCT_NAME = "$(TARGET_NAME)";
-				SWIFT_EMIT_LOC_STRINGS = YES;
-				SWIFT_VERSION = 5.0;
-			};
-			name = Debug;
-		};
-		F3CC11EA19F84DB3ABDDBAA5 /* Release */ = {
-			isa = XCBuildConfiguration;
-			buildSettings = {
-				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
-				CODE_SIGN_ENTITLEMENTS = ImageLabel/ImageLabel.entitlements;
-				CODE_SIGN_STYLE = Automatic;
-				COMBINE_HIDPI_IMAGES = YES;
-				CURRENT_PROJECT_VERSION = 1;
-				ENABLE_HARDENED_RUNTIME = YES;
-				GENERATE_INFOPLIST_FILE = YES;
-				INFOPLIST_KEY_CFBundleDisplayName = ImageLabel;
-				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.photography";
-				INFOPLIST_KEY_NSHumanReadableCopyright = "";
-				LD_RUNPATH_SEARCH_PATHS = (
-					"$(inherited)",
-					"@executable_path/../Frameworks",
-				);
-				MACOSX_DEPLOYMENT_TARGET = 14.0;
-				MARKETING_VERSION = 1.0;
-				PRODUCT_BUNDLE_IDENTIFIER = com.imagelabel.app;
-				PRODUCT_NAME = "$(TARGET_NAME)";
-				SWIFT_EMIT_LOC_STRINGS = YES;
-				SWIFT_VERSION = 5.0;
-			};
-			name = Release;
-		};
 		DFAB5D1F39B445F9AC2DD5F1 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
@@ -381,39 +388,62 @@
 			};
 			name = Debug;
 		};
-		36C069ADD5CD4D19982E945C /* Release */ = {
+		F3CC11EA19F84DB3ABDDBAA5 /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				BUNDLE_LOADER = "$(TEST_HOST)";
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CODE_SIGN_ENTITLEMENTS = ImageLabel/ImageLabel.entitlements;
+				"CODE_SIGN_IDENTITY[sdk=macosx*]" = "-";
 				CODE_SIGN_STYLE = Automatic;
+				COMBINE_HIDPI_IMAGES = YES;
 				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = 6XU24ABSWS;
+				ENABLE_APP_SANDBOX = YES;
+				ENABLE_HARDENED_RUNTIME = YES;
+				ENABLE_INCOMING_NETWORK_CONNECTIONS = YES;
+				ENABLE_OUTGOING_NETWORK_CONNECTIONS = NO;
+				ENABLE_RESOURCE_ACCESS_AUDIO_INPUT = NO;
+				ENABLE_RESOURCE_ACCESS_BLUETOOTH = NO;
+				ENABLE_RESOURCE_ACCESS_CALENDARS = NO;
+				ENABLE_RESOURCE_ACCESS_CAMERA = NO;
+				ENABLE_RESOURCE_ACCESS_CONTACTS = NO;
+				ENABLE_RESOURCE_ACCESS_LOCATION = NO;
+				ENABLE_RESOURCE_ACCESS_PRINTING = NO;
+				ENABLE_RESOURCE_ACCESS_USB = NO;
 				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_KEY_CFBundleDisplayName = ImageLabel;
+				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.photography";
+				INFOPLIST_KEY_NSHumanReadableCopyright = "";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/../Frameworks",
+				);
 				MACOSX_DEPLOYMENT_TARGET = 14.0;
 				MARKETING_VERSION = 1.0;
-				PRODUCT_BUNDLE_IDENTIFIER = com.imagelabel.tests;
+				PRODUCT_BUNDLE_IDENTIFIER = com.imagelabel.app;
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_EMIT_LOC_STRINGS = YES;
 				SWIFT_VERSION = 5.0;
-				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/ImageLabel.app/Contents/MacOS/ImageLabel";
 			};
 			name = Release;
 		};
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
-		8471640763214850A15AFB41 /* Build configuration list for PBXProject "ImageLabel" */ = {
-			isa = XCConfigurationList;
-			buildConfigurations = (
-				D3545D1CBEB144429C7FBEB4 /* Debug */,
-				14ED4DCFBF2346E593C9A3CA /* Release */,
-			);
-			defaultConfigurationIsVisible = 0;
-			defaultConfigurationName = Release;
-		};
 		331D0062C057486F8B65188F /* Build configuration list for PBXNativeTarget "ImageLabel" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				D348745FEBEB453DA8962002 /* Debug */,
 				F3CC11EA19F84DB3ABDDBAA5 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		8471640763214850A15AFB41 /* Build configuration list for PBXProject "ImageLabel" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				D3545D1CBEB144429C7FBEB4 /* Debug */,
+				14ED4DCFBF2346E593C9A3CA /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;

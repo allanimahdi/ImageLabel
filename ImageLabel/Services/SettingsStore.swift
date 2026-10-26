@@ -17,6 +17,15 @@ final class SettingsStore: ObservableObject {
         case serviceAccount = "Service Account JSON"
 
         var id: String { rawValue }
+
+        var helpSummary: String {
+            switch self {
+            case .apiKey:
+                return "Paste a Google Cloud API key restricted to the Vision API. No private key is used."
+            case .serviceAccount:
+                return "Choose a downloaded service-account key JSON (type: service_account). The app signs a short-lived JWT locally — do not paste an API key here."
+            }
+        }
     }
 
     @Published var authMode: AuthMode {
@@ -29,12 +38,16 @@ final class SettingsStore: ObservableObject {
 
     @Published var serviceAccountPath: String = ""
 
+    /// Last credential validation message for Settings (never includes secrets).
+    @Published var credentialStatus: String?
+
     init() {
         let savedMode = UserDefaults.standard.string(forKey: Keys.authMode) ?? AuthMode.apiKey.rawValue
         authMode = AuthMode(rawValue: savedMode) ?? .apiKey
         apiKey = Self.loadAPIKey() ?? ""
         serviceAccountPath = UserDefaults.standard.string(forKey: Keys.serviceAccountPath) ?? ""
         _ = resolveServiceAccountURL()
+        refreshCredentialStatus()
     }
 
     /// Persists path + security-scoped bookmark so sandbox access survives relaunch.
@@ -51,6 +64,7 @@ final class SettingsStore: ObservableObject {
         } catch {
             UserDefaults.standard.removeObject(forKey: Keys.serviceAccountBookmark)
         }
+        refreshCredentialStatus()
     }
 
     func resolveServiceAccountURL() -> URL? {
@@ -87,12 +101,47 @@ final class SettingsStore: ObservableObject {
         }
     }
 
+    func refreshCredentialStatus() {
+        switch authMode {
+        case .apiKey:
+            let key = apiKey.trimmingCharacters(in: .whitespacesAndNewlines)
+            if key.isEmpty {
+                credentialStatus = "No API key saved yet."
+            } else if key.contains("{") || key.contains("private_key") {
+                credentialStatus = "This looks like JSON. Switch to “Service Account JSON” and Browse to the key file instead of pasting it here."
+            } else {
+                credentialStatus = "API key saved in Keychain (not shown). Ready to label."
+            }
+        case .serviceAccount:
+            guard let url = resolveServiceAccountURL() else {
+                credentialStatus = "No service-account JSON selected yet."
+                return
+            }
+            guard FileManager.default.fileExists(atPath: url.path) else {
+                credentialStatus = "File not found. Use Browse… to pick the JSON key again."
+                return
+            }
+            do {
+                let creds = try ServiceAccountCredentials.load(from: url)
+                // Mention email only — never private key material.
+                credentialStatus = "Service account OK: \(creds.clientEmail)"
+            } catch {
+                credentialStatus = error.localizedDescription
+            }
+        }
+    }
+
     func makeVisionClient() throws -> VisionClient {
         switch authMode {
         case .apiKey:
             let key = apiKey.trimmingCharacters(in: .whitespacesAndNewlines)
             guard !key.isEmpty else {
                 throw VisionError.missingCredentials("Add a Google Cloud Vision API key in Settings.")
+            }
+            if key.contains("{") || key.contains("BEGIN PRIVATE KEY") || key.contains("private_key") {
+                throw VisionError.missingCredentials(
+                    "Settings is on API Key, but the value looks like a service-account JSON/PEM. Switch to “Service Account JSON” and Browse to the key file."
+                )
             }
             return VisionClient(auth: .apiKey(key))
         case .serviceAccount:
@@ -102,6 +151,8 @@ final class SettingsStore: ObservableObject {
             guard FileManager.default.fileExists(atPath: url.path) else {
                 throw VisionError.missingCredentials("Service-account JSON not found at \(url.path).")
             }
+            // Validate (and import private key) before the labeling loop starts.
+            _ = try ServiceAccountCredentials.load(from: url)
             return VisionClient(auth: .serviceAccount(url))
         }
     }
