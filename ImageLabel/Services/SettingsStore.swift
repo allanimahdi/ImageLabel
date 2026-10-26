@@ -5,11 +5,28 @@ import SwiftUI
 @MainActor
 final class SettingsStore: ObservableObject {
     private enum Keys {
+        static let labelingBackend = "labelingBackend"
         static let authMode = "authMode"
         static let serviceAccountPath = "serviceAccountPath"
         static let serviceAccountBookmark = "serviceAccountBookmark"
         static let keychainService = "com.imagelabel.credentials"
         static let keychainAccount = "googleVisionAPIKey"
+    }
+
+    enum LabelingBackend: String, CaseIterable, Identifiable {
+        case localApple = "Local (Apple Vision)"
+        case googleCloud = "Google Cloud Vision"
+
+        var id: String { rawValue }
+
+        var helpSummary: String {
+            switch self {
+            case .localApple:
+                return "On-device classification with Apple Vision. Free, offline, no API key — fewer / less specific labels than Google."
+            case .googleCloud:
+                return "Uses Google Cloud Vision over the network. Needs an API key or service-account JSON and a project with Vision enabled (billing)."
+            }
+        }
     }
 
     enum AuthMode: String, CaseIterable, Identifiable {
@@ -28,6 +45,10 @@ final class SettingsStore: ObservableObject {
         }
     }
 
+    @Published var labelingBackend: LabelingBackend {
+        didSet { UserDefaults.standard.set(labelingBackend.rawValue, forKey: Keys.labelingBackend) }
+    }
+
     @Published var authMode: AuthMode {
         didSet { UserDefaults.standard.set(authMode.rawValue, forKey: Keys.authMode) }
     }
@@ -38,10 +59,13 @@ final class SettingsStore: ObservableObject {
 
     @Published var serviceAccountPath: String = ""
 
-    /// Last credential validation message for Settings (never includes secrets).
+    /// Last credential / backend status for Settings (never includes secrets).
     @Published var credentialStatus: String?
 
     init() {
+        let savedBackend = UserDefaults.standard.string(forKey: Keys.labelingBackend)
+        // Default to Local — free/offline; recommend for cost.
+        labelingBackend = LabelingBackend(rawValue: savedBackend ?? "") ?? .localApple
         let savedMode = UserDefaults.standard.string(forKey: Keys.authMode) ?? AuthMode.apiKey.rawValue
         authMode = AuthMode(rawValue: savedMode) ?? .apiKey
         apiKey = Self.loadAPIKey() ?? ""
@@ -91,7 +115,17 @@ final class SettingsStore: ObservableObject {
         return URL(fileURLWithPath: path)
     }
 
-    var hasCredentials: Bool {
+    /// Whether Label Images can run for the selected backend.
+    var canLabel: Bool {
+        switch labelingBackend {
+        case .localApple:
+            return true
+        case .googleCloud:
+            return hasGoogleCredentials
+        }
+    }
+
+    var hasGoogleCredentials: Bool {
         switch authMode {
         case .apiKey:
             return !apiKey.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty
@@ -101,7 +135,19 @@ final class SettingsStore: ObservableObject {
         }
     }
 
+    /// Back-compat name used by older call sites.
+    var hasCredentials: Bool { canLabel }
+
     func refreshCredentialStatus() {
+        switch labelingBackend {
+        case .localApple:
+            credentialStatus = "Local Apple Vision — ready (no credentials). Labels stay on this Mac."
+        case .googleCloud:
+            refreshGoogleCredentialStatus()
+        }
+    }
+
+    private func refreshGoogleCredentialStatus() {
         switch authMode {
         case .apiKey:
             let key = apiKey.trimmingCharacters(in: .whitespacesAndNewlines)
@@ -110,7 +156,7 @@ final class SettingsStore: ObservableObject {
             } else if key.contains("{") || key.contains("private_key") {
                 credentialStatus = "This looks like JSON. Switch to “Service Account JSON” and Browse to the key file instead of pasting it here."
             } else {
-                credentialStatus = "API key saved in Keychain (not shown). Ready to label."
+                credentialStatus = "API key saved in Keychain (not shown). Ready to label with Google."
             }
         case .serviceAccount:
             guard let url = resolveServiceAccountURL() else {
@@ -123,11 +169,19 @@ final class SettingsStore: ObservableObject {
             }
             do {
                 let creds = try ServiceAccountCredentials.load(from: url)
-                // Mention email only — never private key material.
                 credentialStatus = "Service account OK: \(creds.clientEmail)"
             } catch {
                 credentialStatus = error.localizedDescription
             }
+        }
+    }
+
+    func makeLabeler() throws -> any ImageLabeling {
+        switch labelingBackend {
+        case .localApple:
+            return AppleVisionLabeler()
+        case .googleCloud:
+            return try makeVisionClient()
         }
     }
 
@@ -151,7 +205,6 @@ final class SettingsStore: ObservableObject {
             guard FileManager.default.fileExists(atPath: url.path) else {
                 throw VisionError.missingCredentials("Service-account JSON not found at \(url.path).")
             }
-            // Validate (and import private key) before the labeling loop starts.
             _ = try ServiceAccountCredentials.load(from: url)
             return VisionClient(auth: .serviceAccount(url))
         }

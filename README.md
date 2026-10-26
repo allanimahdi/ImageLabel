@@ -1,6 +1,6 @@
 # ImageLabel
 
-Native **macOS** SwiftUI app that labels a folder of images with [Google Cloud Vision](https://cloud.google.com/vision) and renames each file to its **best-score label** (no score in the filename). Optionally group pictures into topic folders — you pick which label/topic to group by.
+Native **macOS** SwiftUI app that labels a folder of images and renames each file to its **best-score label** (no score in the filename). Optionally group pictures into topic folders — you pick which label/topic to group by.
 
 Requires **macOS 14+** and **Xcode 15+**.
 
@@ -13,45 +13,58 @@ Requires **macOS 14+** and **Xcode 15+**.
 
 Signing: with Automatic signing, pick your Team under the ImageLabel target → Signing & Capabilities if Xcode asks.
 
-## Google Cloud Vision credentials
+## Labeling backends (Settings)
 
-You need an existing Google Cloud project with the **Cloud Vision API** enabled.
+**Settings → Labeling** chooses the engine. Default is **Local (Apple Vision)** (free / offline).
 
-Pick **one** mode in Settings — do not mix them (an API key is not a JSON key file, and vice versa).
+| Backend | Cost / network | Credentials | Capability |
+|---------|----------------|-------------|------------|
+| **Local (Apple Vision)** | Free, on-device, no network | None | Apple’s built-in image classifier (`VNClassifyImageRequest`). Fewer / less specific labels than Google; weak photos may get no confident label. |
+| **Google Cloud Vision** | Network + GCP billing | API key or service-account JSON | Stronger LABEL_DETECTION; needs Vision API enabled on the project. |
 
-### Option A — API key (simplest)
+Rename and Group by Topic work the same after labels arrive for either backend.
+
+### Local (Apple Vision)
+
+1. Settings → Labeling → **Local (Apple Vision)**.
+2. Select a folder → **Label Images** (no API key).
+3. Review **Rename to Top Labels** → **Apply Renames**.
+
+Limits: taxonomy and accuracy are whatever Apple ships on the Mac; abstract / unusual images often score low. If labeling fails with “no confident labels”, try a clearer photo or switch to Google.
+
+### Google Cloud Vision credentials
+
+You need an existing Google Cloud project with the **Cloud Vision API** enabled. In Settings, choose **Google Cloud Vision**, then pick **one** auth mode — do not mix API key and JSON.
+
+#### Option A — API key (simplest)
 
 1. In [Google Cloud Console](https://console.cloud.google.com/) → APIs & Services → Credentials, create an **API key**.
 2. Restrict it to the Vision API if you can.
-3. In ImageLabel: **Settings** (gear) or **ImageLabel → Settings…** (⌘,), choose **API Key**, paste the key only (the `AIza…` string).
+3. Choose **API Key**, paste the key only (the `AIza…` string).
 
-The key is stored in the macOS **Keychain**, not in the repo. API-key mode never creates an RSA private key.
+The key is stored in the macOS **Keychain**, not in the repo.
 
-### Option B — Service account JSON
+#### Option B — Service account JSON
 
 1. Create a service account with permission to call Vision (e.g. **Cloud Vision AI User** / Vision-related role).
 2. Download a JSON key file (`"type": "service_account"`) — keep it **outside** this repository.
-3. In Settings, choose **Service Account JSON** and **Browse…** to that file (prefer Browse so sandbox access is remembered).
+3. Choose **Service Account JSON** and **Browse…** to that file.
 
-The app stores only the **file path** in preferences. `.gitignore` already excludes common credential filenames — never commit keys or JSON secrets. Settings shows a status line (service-account email or a clear error) without printing secrets.
+The app stores only the **file path** in preferences. `.gitignore` already excludes common credential filenames — never commit keys or JSON secrets.
 
-### If labeling returns HTTP 403
+### If Google labeling returns HTTP 403
 
-Auth reached Google, but the project rejected the call. In [Google Cloud Console](https://console.cloud.google.com/) for the **same project** as your API key / service account:
-
-1. **APIs & Services → Library → Cloud Vision API → Enable** (wait a few minutes if you just enabled it).
-2. **Billing → Link a billing account** (Vision requires billing; free-tier quotas still need a linked account).
-3. **API key mode:** Credentials → your key → **API restrictions** allow Cloud Vision API (or none while testing). Avoid **HTTP referrer** application restrictions for this Mac app (use None or IP).
-4. **Service account mode:** IAM → grant the SA **Cloud Vision AI User** (`roles/visionai.user` / Vision-related role). Also ensure the SA can use the project (often **Service Usage Consumer**).
-
-Then ⌘R and Label Images again. The footer shows Google’s error message when available (secrets are redacted).
+1. **APIs & Services → Library → Cloud Vision API → Enable**.
+2. **Billing → Link a billing account**.
+3. **API key:** allow Cloud Vision API; avoid HTTP-referrer restrictions for this Mac app.
+4. **Service account:** grant a Vision-related role (+ Service Usage Consumer if needed).
 
 ## How to use
 
-1. **Select Folder** — choose a directory of images (`jpg`, `jpeg`, `png`, `heic`, `heif`, `webp`, `gif`, `tif`/`tiff`, `bmp`). HEIC/HEIF are re-encoded to JPEG for the API when needed.
-2. **Label Images** — calls Vision label detection per file. Progress shows in the footer. Failures are recorded **per file**; the batch continues. When labeling succeeds, a **Rename to Top Labels** sheet opens automatically.
-3. **Rename Files…** — preview then **Apply Renames** to rename each file on disk to its **best-score label only** (e.g. `golden_retriever.jpg` — no score in the name). Collisions get `_2`, `_3`, … **Undo** restores the last rename/group batch when available.
-4. **Group by Topic** (optional, separate) — pick a label from the menu. Preview which files move into a folder named after that topic, then confirm.
+1. **Select Folder** — choose a directory of images (`jpg`, `jpeg`, `png`, `heic`, `heif`, `webp`, `gif`, `tif`/`tiff`, `bmp`). HEIC/HEIF are re-encoded to JPEG for Google when needed; Local can read common formats via Vision.
+2. **Label Images** — Local or Google per Settings. Progress in the footer; failures are **per file**. On success, **Rename to Top Labels** opens.
+3. **Rename Files…** — apply best-score label only (e.g. `golden_retriever.jpg`). Collisions get `_2`, `_3`, …. **Undo** when available.
+4. **Group by Topic** (optional) — pick a label; preview then move matching files into a topic folder.
 
 ## Notes
 

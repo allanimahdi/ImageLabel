@@ -92,19 +92,20 @@ final class LabelingSession: ObservableObject {
         guard !items.isEmpty else { return }
         guard !isLabeling else { return }
 
-        let client: VisionClient
+        let labeler: any ImageLabeling
         do {
-            client = try settings.makeVisionClient()
+            labeler = try settings.makeLabeler()
         } catch {
             statusMessage = error.localizedDescription
             return
         }
 
+        let backendName = settings.labelingBackend == .localApple ? "Apple Vision (local)" : "Google Vision"
         isLabeling = true
         isBusy = true
         progressCompleted = 0
         progressTotal = items.count
-        statusMessage = "Labeling…"
+        statusMessage = "Labeling with \(backendName)…"
         defer {
             isLabeling = false
             isBusy = false
@@ -114,7 +115,7 @@ final class LabelingSession: ObservableObject {
             items[index].status = .labeling
             items[index].errorMessage = nil
             do {
-                let labels = try await client.detectLabels(imageURL: items[index].url)
+                let labels = try await labeler.detectLabels(imageURL: items[index].url, maxResults: 10)
                 items[index].labels = labels
                 if let top = labels.first {
                     items[index].proposedName =
@@ -135,9 +136,9 @@ final class LabelingSession: ObservableObject {
         let ok = labeledCount
         let bad = failedCount
         if bad > 0, let firstError = items.compactMap(\.errorMessage).first {
-            statusMessage = "Labeled \(ok) of \(items.count) (\(bad) failed). \(firstError)"
+            statusMessage = "Labeled \(ok) of \(items.count) with \(backendName) (\(bad) failed). \(firstError)"
         } else {
-            statusMessage = "Labeled \(ok) of \(items.count)"
+            statusMessage = "Labeled \(ok) of \(items.count) with \(backendName)"
                 + (bad > 0 ? " (\(bad) failed)." : ".")
         }
 
@@ -145,6 +146,9 @@ final class LabelingSession: ObservableObject {
         if ok > 0 {
             statusMessage = (statusMessage ?? "") + " Review Rename to apply on disk."
             prepareRenamePreview()
+        } else if bad > 0, settings.labelingBackend == .localApple {
+            statusMessage = (statusMessage ?? "")
+                + " Tip: Settings → Labeling → Google Cloud Vision for stronger labels."
         }
     }
 

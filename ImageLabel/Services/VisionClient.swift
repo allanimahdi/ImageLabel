@@ -13,6 +13,8 @@ enum VisionError: LocalizedError {
     case decodeFailed(String)
     case noLabels
     case serviceAccount(String)
+    /// Local (Apple Vision) or other non-credential labeling failures.
+    case labeling(String)
 
     var errorDescription: String? {
         switch self {
@@ -20,13 +22,14 @@ enum VisionError: LocalizedError {
         case .invalidImageData: return "Could not read image data."
         case .httpStatus(let code, let body): return "Vision API HTTP \(code): \(body)"
         case .decodeFailed(let message): return "Unexpected Vision response: \(message)"
-        case .noLabels: return "No labels returned for this image."
+        case .noLabels: return "No labels returned for this image. Try another photo or switch labeling backend in Settings."
         case .serviceAccount(let message): return message
+        case .labeling(let message): return message
         }
     }
 }
 
-actor VisionClient {
+actor VisionClient: ImageLabeling {
     private let auth: VisionAuth
     private let session: URLSession
     private var cachedAccessToken: (token: String, expiry: Date)?

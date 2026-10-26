@@ -46,8 +46,8 @@ struct ContentView: View {
             } label: {
                 Label("Label Images", systemImage: "tag")
             }
-            .disabled(session.items.isEmpty || session.isBusy || !settings.hasCredentials)
-            .help(settings.hasCredentials ? "Run Google Vision label detection" : "Add credentials in Settings first")
+            .disabled(session.items.isEmpty || session.isBusy || !settings.canLabel)
+            .help(labelButtonHelp)
 
             Button {
                 session.prepareRenamePreview()
@@ -101,12 +101,17 @@ struct ContentView: View {
                 .foregroundStyle(.secondary)
             Text("Select a folder of images")
                 .font(.title2)
-            Text("1) Label with Vision → 2) Rename Files to the top label → optionally Group by Topic.")
+            Text("1) Label (Local Apple Vision or Google) → 2) Rename to the top label → optionally Group by Topic.")
                 .foregroundStyle(.secondary)
                 .multilineTextAlignment(.center)
                 .frame(maxWidth: 420)
-            if !settings.hasCredentials {
-                Text("Add your Vision API key or service-account JSON in Settings before labeling.")
+            Text(settings.labelingBackend == .localApple
+                ? "Settings default to Local (Apple Vision) — free & offline."
+                : "Google Cloud Vision selected — credentials required in Settings.")
+                .font(.callout)
+                .foregroundStyle(settings.canLabel ? Color.secondary : Color.orange)
+            if settings.labelingBackend == .googleCloud && !settings.canLabel {
+                Text("Add an API key or service-account JSON, or switch Labeling to Local.")
                     .font(.callout)
                     .foregroundStyle(.orange)
             }
@@ -218,5 +223,16 @@ struct ContentView: View {
         }
         .padding(.horizontal, 16)
         .padding(.vertical, 8)
+    }
+
+    private var labelButtonHelp: String {
+        switch settings.labelingBackend {
+        case .localApple:
+            return "Classify on-device with Apple Vision (no network or API key)"
+        case .googleCloud:
+            return settings.canLabel
+                ? "Run Google Cloud Vision label detection"
+                : "Add Google credentials in Settings, or switch to Local (Apple Vision)"
+        }
     }
 }

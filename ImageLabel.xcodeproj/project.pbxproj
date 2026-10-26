@@ -15,6 +15,9 @@
 		2FC97DEEE72C40D4805FAD28 /* ImageDataLoader.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5428B83B97A841C88698306E /* ImageDataLoader.swift */; };
 		39688F2AA6934BCDBB4DE7B4 /* FileOperations.swift in Sources */ = {isa = PBXBuildFile; fileRef = 64DFE574D7E14E6C9F8243A0 /* FileOperations.swift */; };
 		3DD3653DF4FD4AA4BF6F57F9 /* VisionClient.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA54677DABEB46449C1733AD /* VisionClient.swift */; };
+		D5F4A3B2C1D04E3F9A8B7C66 /* ImageLabeling.swift in Sources */ = {isa = PBXBuildFile; fileRef = D5F4A3B2C1D04E3F9A8B7C67 /* ImageLabeling.swift */; };
+		E6A5B4C3D2E15F4A0B9C8D68 /* AppleVisionLabeler.swift in Sources */ = {isa = PBXBuildFile; fileRef = E6A5B4C3D2E15F4A0B9C8D69 /* AppleVisionLabeler.swift */; };
+		F7B6C5D4E3F26A5B1C0D9E70 /* AppleVisionLabelerTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = F7B6C5D4E3F26A5B1C0D9E71 /* AppleVisionLabelerTests.swift */; };
 		43C60399957E418A8B7F48C4 /* FilenameSanitizer.swift in Sources */ = {isa = PBXBuildFile; fileRef = F5E36A532E2D4C6FA3601838 /* FilenameSanitizer.swift */; };
 		472DFDD8FC9C4330B3AC5F36 /* GroupPreviewSheet.swift in Sources */ = {isa = PBXBuildFile; fileRef = B9ED8ECDC4384E38AFADD95B /* GroupPreviewSheet.swift */; };
 		538CAC36ACAF49C282318241 /* ImageItem.swift in Sources */ = {isa = PBXBuildFile; fileRef = 63AC56FF1915437997674ED4 /* ImageItem.swift */; };
@@ -59,6 +62,9 @@
 		D7F888E167E448949486EB33 /* ImageLabel.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = ImageLabel.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		F5E36A532E2D4C6FA3601838 /* FilenameSanitizer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FilenameSanitizer.swift; sourceTree = "<group>"; };
 		FA54677DABEB46449C1733AD /* VisionClient.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VisionClient.swift; sourceTree = "<group>"; };
+		D5F4A3B2C1D04E3F9A8B7C67 /* ImageLabeling.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ImageLabeling.swift; sourceTree = "<group>"; };
+		E6A5B4C3D2E15F4A0B9C8D69 /* AppleVisionLabeler.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppleVisionLabeler.swift; sourceTree = "<group>"; };
+		F7B6C5D4E3F26A5B1C0D9E71 /* AppleVisionLabelerTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppleVisionLabelerTests.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -86,6 +92,7 @@
 				A2C1D0E1F2A34B5C9D8E7F61 /* CredentialCryptoTests.swift */,
 				B3D2E1F0A1B24C3D9E8F7A63 /* GoogleAPIErrorFormatterTests.swift */,
 				C4E3F2A1B0C14D2E8F7A6B65 /* FileOperationsTests.swift */,
+				F7B6C5D4E3F26A5B1C0D9E71 /* AppleVisionLabelerTests.swift */,
 			);
 			path = ImageLabelTests;
 			sourceTree = "<group>";
@@ -134,7 +141,9 @@
 			isa = PBXGroup;
 			children = (
 				C57F65381ED54A9A9780641A /* SettingsStore.swift */,
+				D5F4A3B2C1D04E3F9A8B7C67 /* ImageLabeling.swift */,
 				FA54677DABEB46449C1733AD /* VisionClient.swift */,
+				E6A5B4C3D2E15F4A0B9C8D69 /* AppleVisionLabeler.swift */,
 				64DFE574D7E14E6C9F8243A0 /* FileOperations.swift */,
 				2AC879E02F9D4A44A9E1114F /* LabelingSession.swift */,
 				5428B83B97A841C88698306E /* ImageDataLoader.swift */,
@@ -258,7 +267,9 @@
 				B863C9B8F5CC47BE9261FE49 /* SupportedImageTypes.swift in Sources */,
 				43C60399957E418A8B7F48C4 /* FilenameSanitizer.swift in Sources */,
 				07E05713051B4FE699523F00 /* SettingsStore.swift in Sources */,
+				D5F4A3B2C1D04E3F9A8B7C66 /* ImageLabeling.swift in Sources */,
 				3DD3653DF4FD4AA4BF6F57F9 /* VisionClient.swift in Sources */,
+				E6A5B4C3D2E15F4A0B9C8D68 /* AppleVisionLabeler.swift in Sources */,
 				39688F2AA6934BCDBB4DE7B4 /* FileOperations.swift in Sources */,
 				62AB5253CEE14D04A2504B57 /* LabelingSession.swift in Sources */,
 				2FC97DEEE72C40D4805FAD28 /* ImageDataLoader.swift in Sources */,
@@ -277,6 +288,7 @@
 				A2C1D0E1F2A34B5C9D8E7F60 /* CredentialCryptoTests.swift in Sources */,
 				B3D2E1F0A1B24C3D9E8F7A62 /* GoogleAPIErrorFormatterTests.swift in Sources */,
 				C4E3F2A1B0C14D2E8F7A6B64 /* FileOperationsTests.swift in Sources */,
+				F7B6C5D4E3F26A5B1C0D9E70 /* AppleVisionLabelerTests.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
