@@ -1,19 +1,19 @@
 import SwiftUI
 
-/// First-viewport home: brand + one short line + large primary actions.
+/// First-viewport home: brand + one short line + four large primary actions.
 struct HomeLandingView: View {
     let labelingBackendLabel: String
     let canLabel: Bool
     let onLabelAndRename: () -> Void
-    let onRenameByFaces: () -> Void
     let onAutoGroup: () -> Void
+    let onRenameByFaces: () -> Void
     let onSettings: () -> Void
 
     var body: some View {
         ZStack {
             atmosphere
             ScrollView {
-                VStack(alignment: .leading, spacing: 28) {
+                VStack(alignment: .leading, spacing: 32) {
                     brandBlock
                     actionGrid
                 }
@@ -67,28 +67,24 @@ struct HomeLandingView: View {
                 title: "Label & Rename",
                 subtitle: "Vision labels → rename files to the top label",
                 systemImage: "tag.fill",
-                isPrimary: true,
                 action: onLabelAndRename
+            )
+            HomeActionButton(
+                title: "Auto-Group into Folders",
+                subtitle: "Sort labeled photos into coarse category folders",
+                systemImage: "folder.badge.gearshape",
+                action: onAutoGroup
             )
             HomeActionButton(
                 title: "Rename by Faces",
                 subtitle: "On-device faces → name people → rename photos",
                 systemImage: "person.crop.rectangle.stack.fill",
-                isPrimary: true,
                 action: onRenameByFaces
-            )
-            HomeActionButton(
-                title: "Auto-Group Folders",
-                subtitle: "Sort labeled photos into coarse categories",
-                systemImage: "folder.badge.gearshape",
-                isPrimary: false,
-                action: onAutoGroup
             )
             HomeActionButton(
                 title: "Settings",
                 subtitle: "Local or Google labeling, faces, credentials",
                 systemImage: "gearshape.fill",
-                isPrimary: false,
                 action: onSettings
             )
         }
@@ -99,7 +95,6 @@ private struct HomeActionButton: View {
     let title: String
     let subtitle: String
     let systemImage: String
-    let isPrimary: Bool
     let action: () -> Void
 
     @State private var hovering = false
@@ -108,12 +103,12 @@ private struct HomeActionButton: View {
         Button(action: action) {
             HStack(alignment: .top, spacing: 14) {
                 Image(systemName: systemImage)
-                    .font(.system(size: 26, weight: .semibold))
-                    .foregroundStyle(isPrimary ? Color.white : Color.accentColor)
-                    .frame(width: 44, height: 44)
+                    .font(.system(size: 28, weight: .semibold))
+                    .foregroundStyle(Color.white)
+                    .frame(width: 48, height: 48)
                     .background {
-                        RoundedRectangle(cornerRadius: 10, style: .continuous)
-                            .fill(isPrimary ? Color.accentColor : Color.accentColor.opacity(0.15))
+                        RoundedRectangle(cornerRadius: 12, style: .continuous)
+                            .fill(Color.accentColor)
                     }
 
                 VStack(alignment: .leading, spacing: 4) {
@@ -129,27 +124,22 @@ private struct HomeActionButton: View {
                 }
                 Spacer(minLength: 0)
             }
-            .padding(18)
-            .frame(maxWidth: .infinity, minHeight: 108, alignment: .leading)
+            .padding(20)
+            .frame(maxWidth: .infinity, minHeight: 120, alignment: .leading)
             .background {
                 RoundedRectangle(cornerRadius: 14, style: .continuous)
                     .fill(Color(nsColor: .controlBackgroundColor))
                     .overlay {
-                        if isPrimary {
-                            RoundedRectangle(cornerRadius: 14, style: .continuous)
-                                .fill(Color.accentColor.opacity(0.10))
-                        }
+                        RoundedRectangle(cornerRadius: 14, style: .continuous)
+                            .fill(Color.accentColor.opacity(0.08))
                     }
             }
             .overlay {
                 RoundedRectangle(cornerRadius: 14, style: .continuous)
-                    .strokeBorder(
-                        isPrimary ? Color.accentColor.opacity(0.45) : Color.primary.opacity(0.08),
-                        lineWidth: isPrimary ? 1.5 : 1
-                    )
+                    .strokeBorder(Color.accentColor.opacity(0.4), lineWidth: 1.5)
             }
-            .shadow(color: .black.opacity(hovering ? 0.12 : 0.05), radius: hovering ? 10 : 4, y: hovering ? 4 : 2)
-            .scaleEffect(hovering ? 1.012 : 1)
+            .shadow(color: .black.opacity(hovering ? 0.14 : 0.06), radius: hovering ? 12 : 5, y: hovering ? 5 : 2)
+            .scaleEffect(hovering ? 1.015 : 1)
             .animation(.easeOut(duration: 0.15), value: hovering)
         }
         .buttonStyle(.plain)

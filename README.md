@@ -61,7 +61,7 @@ The app stores only the **file path** in preferences. `.gitignore` already exclu
 
 ## How to use
 
-The home screen shows four large actions: **Label & Rename**, **Rename by Faces**, **Auto-Group Folders**, and **Settings**. **Home** in the label workspace returns to that landing.
+The home screen shows four large primary actions: **Label & Rename**, **Auto-Group into Folders**, **Rename by Faces**, and **Settings**. **Home** in the label workspace returns to that landing.
 
 1. **Select Folder** — choose a directory of images (`jpg`, `jpeg`, `png`, `heic`, `heif`, `webp`, `gif`, `tif`/`tiff`, `bmp`). HEIC/HEIF are re-encoded to JPEG for Google when needed; Local can read common formats via Vision.
 2. **Label Images** — Local or Google per Settings. Progress in the footer; failures are **per file**. On success, **Rename to Top Labels** opens.

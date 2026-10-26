@@ -19,11 +19,11 @@ struct ContentView: View {
                     labelingBackendLabel: settings.labelingBackend.rawValue,
                     canLabel: settings.canLabel,
                     onLabelAndRename: startLabelAndRename,
+                    onAutoGroup: startAutoGroupFromHome,
                     onRenameByFaces: {
                         faceSession.reset()
                         showFaceRename = true
                     },
-                    onAutoGroup: startAutoGroupFromHome,
                     onSettings: { showSettings = true }
                 )
             }
