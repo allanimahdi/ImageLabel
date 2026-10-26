@@ -11,6 +11,9 @@ final class SettingsStore: ObservableObject {
         static let serviceAccountBookmark = "serviceAccountBookmark"
         static let keychainService = "com.imagelabel.credentials"
         static let keychainAccount = "googleVisionAPIKey"
+        static let faceNameOrder = "faceNameOrder"
+        static let persistFaceIdentities = "persistFaceIdentities"
+        static let faceMatchThreshold = "faceMatchThreshold"
     }
 
     enum LabelingBackend: String, CaseIterable, Identifiable {
@@ -62,6 +65,20 @@ final class SettingsStore: ObservableObject {
     /// Last credential / backend status for Settings (never includes secrets).
     @Published var credentialStatus: String?
 
+    @Published var faceNameOrder: FaceNameOrder {
+        didSet { UserDefaults.standard.set(faceNameOrder.rawValue, forKey: Keys.faceNameOrder) }
+    }
+
+    /// When enabled, confirmed person names + face crops are stored on-device for later batches.
+    @Published var persistFaceIdentities: Bool {
+        didSet { UserDefaults.standard.set(persistFaceIdentities, forKey: Keys.persistFaceIdentities) }
+    }
+
+    /// Vision feature-print merge distance (lower = stricter). Typical useful range ~0.45–0.90.
+    @Published var faceMatchThreshold: Double {
+        didSet { UserDefaults.standard.set(faceMatchThreshold, forKey: Keys.faceMatchThreshold) }
+    }
+
     init() {
         let savedBackend = UserDefaults.standard.string(forKey: Keys.labelingBackend)
         // Default to Local — free/offline; recommend for cost.
@@ -70,6 +87,15 @@ final class SettingsStore: ObservableObject {
         authMode = AuthMode(rawValue: savedMode) ?? .apiKey
         apiKey = Self.loadAPIKey() ?? ""
         serviceAccountPath = UserDefaults.standard.string(forKey: Keys.serviceAccountPath) ?? ""
+        let orderRaw = UserDefaults.standard.string(forKey: Keys.faceNameOrder) ?? FaceNameOrder.leftToRight.rawValue
+        faceNameOrder = FaceNameOrder(rawValue: orderRaw) ?? .leftToRight
+        if UserDefaults.standard.object(forKey: Keys.persistFaceIdentities) == nil {
+            persistFaceIdentities = false
+        } else {
+            persistFaceIdentities = UserDefaults.standard.bool(forKey: Keys.persistFaceIdentities)
+        }
+        let storedThreshold = UserDefaults.standard.double(forKey: Keys.faceMatchThreshold)
+        faceMatchThreshold = storedThreshold > 0 ? storedThreshold : 0.65
         _ = resolveServiceAccountURL()
         refreshCredentialStatus()
     }

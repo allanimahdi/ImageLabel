@@ -3,7 +3,10 @@ import SwiftUI
 struct ContentView: View {
     @EnvironmentObject private var settings: SettingsStore
     @EnvironmentObject private var session: LabelingSession
+    @EnvironmentObject private var faceSession: FaceRenameSession
+    @EnvironmentObject private var identityStore: FaceIdentityStore
     @State private var showSettings = false
+    @State private var showFaceRename = false
 
     var body: some View {
         VStack(spacing: 0) {
@@ -20,7 +23,8 @@ struct ContentView: View {
         .sheet(isPresented: $showSettings) {
             SettingsView()
                 .environmentObject(settings)
-                .frame(width: 520, height: 400)
+                .environmentObject(identityStore)
+                .frame(width: 540, height: 520)
         }
         .sheet(isPresented: $session.showRenamePreview) {
             RenamePreviewSheet()
@@ -29,6 +33,12 @@ struct ContentView: View {
         .sheet(isPresented: $session.showGroupPreview) {
             GroupPreviewSheet()
                 .environmentObject(session)
+        }
+        .sheet(isPresented: $showFaceRename) {
+            FaceRenameFlowView()
+                .environmentObject(settings)
+                .environmentObject(faceSession)
+                .environmentObject(identityStore)
         }
     }
 
@@ -56,6 +66,15 @@ struct ContentView: View {
             }
             .disabled(session.labeledCount == 0 || session.isBusy)
             .help("Preview renaming each file to its best-score Vision label (no score in the name), then Apply")
+
+            Button {
+                faceSession.reset()
+                showFaceRename = true
+            } label: {
+                Label("Rename by Faces…", systemImage: "person.crop.rectangle.stack")
+            }
+            .disabled(session.isBusy)
+            .help("Detect faces on-device, name people once, preview, then rename photos")
 
             Button {
                 session.prepareAutoGroupPreview()

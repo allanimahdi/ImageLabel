@@ -64,8 +64,9 @@ The app stores only the **file path** in preferences. `.gitignore` already exclu
 1. **Select Folder** — choose a directory of images (`jpg`, `jpeg`, `png`, `heic`, `heif`, `webp`, `gif`, `tif`/`tiff`, `bmp`). HEIC/HEIF are re-encoded to JPEG for Google when needed; Local can read common formats via Vision.
 2. **Label Images** — Local or Google per Settings. Progress in the footer; failures are **per file**. On success, **Rename to Top Labels** opens.
 3. **Rename Files…** — apply best-score label only (e.g. `golden_retriever.jpg`). Collisions get `_2`, `_3`, …. **Undo** when available.
-4. **Auto-Group into Folders** (optional) — preview then move each labeled image into one **coarse** folder (`Animals`, `People`, `Nature`, `Food`, `Vehicles`, `Buildings`, `Sports`, `Technology`, `Art`, or `Other`). Fine labels like “Golden Retriever” collapse into `Animals` via keyword rules (not dozens of niche folders).
-5. **Group by Topic** (optional) — pick an exact Vision label yourself; preview then move matching files into a folder named after that label.
+4. **Rename by Faces…** — on-device face detection & grouping (no photo upload): Select → Detect & Group → Identify People → Preview & Rename. Names look like `Mahdi-Marija.jpg` (left→right by default; alphabetical optional in Settings). Unknown-only photos keep their original names. Optional: remember people on this Mac / delete stored identities in Settings.
+5. **Auto-Group into Folders** (optional) — preview then move each labeled image into one **coarse** folder (`Animals`, `People`, `Nature`, `Food`, `Vehicles`, `Buildings`, `Sports`, `Technology`, `Art`, or `Other`). Fine labels like “Golden Retriever” collapse into `Animals` via keyword rules (not dozens of niche folders).
+6. **Group by Topic** (optional) — pick an exact Vision label yourself; preview then move matching files into a folder named after that label.
 
 ## Notes
 

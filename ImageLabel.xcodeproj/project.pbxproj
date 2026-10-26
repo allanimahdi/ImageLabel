@@ -7,6 +7,18 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		D0ACE7DDA268466FB7AC3007 /* FaceModels.swift in Sources */ = {isa = PBXBuildFile; fileRef = FE95759804574A48AB6980A6 /* FaceModels.swift */; };
+		0837F55D65694D92977D80A4 /* FaceDetectionService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 65F7D06F7B834952A3F91DFC /* FaceDetectionService.swift */; };
+		510753FA9FCA4DF6B5C90307 /* FaceClusteringService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 35498EC1824648FCB5CFB6A5 /* FaceClusteringService.swift */; };
+		F235D07411124D6A96C25A29 /* FaceFilenameBuilder.swift in Sources */ = {isa = PBXBuildFile; fileRef = 59EB96DFEC844AC1AD1006B1 /* FaceFilenameBuilder.swift */; };
+		E67B46B659B84700A2C5CB83 /* FaceIdentityStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = FDB75C6E48B84974899ADC22 /* FaceIdentityStore.swift */; };
+		59FCD2DE78914F21861441B4 /* FaceRenameSession.swift in Sources */ = {isa = PBXBuildFile; fileRef = EA516BF310CD4904A4007DD2 /* FaceRenameSession.swift */; };
+		8F1F89B6D9054128B29638D2 /* FaceRenameFlowView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11703C8882C041529451390E /* FaceRenameFlowView.swift */; };
+		78D2242BEE6B417EAAF7EFA0 /* FaceSelectStepView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B150451347D447D1A267E3CF /* FaceSelectStepView.swift */; };
+		DA05107752EF41388D244A15 /* FaceDetectStepView.swift in Sources */ = {isa = PBXBuildFile; fileRef = D6AC8D21CE8F47F2817AB174 /* FaceDetectStepView.swift */; };
+		82F621AD75654437B40A9817 /* FaceIdentifyStepView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 93133DE07176444FA02727B4 /* FaceIdentifyStepView.swift */; };
+		3CAD757932CB44148E08BC9D /* FacePreviewStepView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 328E9DAEA4624B7A828AB1E8 /* FacePreviewStepView.swift */; };
+		72B3CABC32224EAB98DF9E78 /* FaceFilenameBuilderTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = E84E6935DFCD41CEA1DDF24A /* FaceFilenameBuilderTests.swift */; };
 		07E05713051B4FE699523F00 /* SettingsStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = C57F65381ED54A9A9780641A /* SettingsStore.swift */; };
 		0FEF702FDB614C97986E9257 /* FilenameSanitizerTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 15EF72A14F5D4B37AEB3BA34 /* FilenameSanitizerTests.swift */; };
 		A2C1D0E1F2A34B5C9D8E7F60 /* CredentialCryptoTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = A2C1D0E1F2A34B5C9D8E7F61 /* CredentialCryptoTests.swift */; };
@@ -43,6 +55,18 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		FE95759804574A48AB6980A6 /* FaceModels.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FaceModels.swift; sourceTree = "<group>"; };
+		65F7D06F7B834952A3F91DFC /* FaceDetectionService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FaceDetectionService.swift; sourceTree = "<group>"; };
+		35498EC1824648FCB5CFB6A5 /* FaceClusteringService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FaceClusteringService.swift; sourceTree = "<group>"; };
+		59EB96DFEC844AC1AD1006B1 /* FaceFilenameBuilder.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FaceFilenameBuilder.swift; sourceTree = "<group>"; };
+		FDB75C6E48B84974899ADC22 /* FaceIdentityStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FaceIdentityStore.swift; sourceTree = "<group>"; };
+		EA516BF310CD4904A4007DD2 /* FaceRenameSession.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FaceRenameSession.swift; sourceTree = "<group>"; };
+		11703C8882C041529451390E /* FaceRenameFlowView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FaceRenameFlowView.swift; sourceTree = "<group>"; };
+		B150451347D447D1A267E3CF /* FaceSelectStepView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FaceSelectStepView.swift; sourceTree = "<group>"; };
+		D6AC8D21CE8F47F2817AB174 /* FaceDetectStepView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FaceDetectStepView.swift; sourceTree = "<group>"; };
+		93133DE07176444FA02727B4 /* FaceIdentifyStepView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FaceIdentifyStepView.swift; sourceTree = "<group>"; };
+		328E9DAEA4624B7A828AB1E8 /* FacePreviewStepView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FacePreviewStepView.swift; sourceTree = "<group>"; };
+		E84E6935DFCD41CEA1DDF24A /* FaceFilenameBuilderTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FaceFilenameBuilderTests.swift; sourceTree = "<group>"; };
 		15EF72A14F5D4B37AEB3BA34 /* FilenameSanitizerTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FilenameSanitizerTests.swift; sourceTree = "<group>"; };
 		A2C1D0E1F2A34B5C9D8E7F61 /* CredentialCryptoTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CredentialCryptoTests.swift; sourceTree = "<group>"; };
 		B3D2E1F0A1B24C3D9E8F7A63 /* GoogleAPIErrorFormatterTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GoogleAPIErrorFormatterTests.swift; sourceTree = "<group>"; };
@@ -92,6 +116,7 @@
 		5114CB65A714430F8C3F7672 /* ImageLabelTests */ = {
 			isa = PBXGroup;
 			children = (
+				E84E6935DFCD41CEA1DDF24A /* FaceFilenameBuilderTests.swift */,
 				15EF72A14F5D4B37AEB3BA34 /* FilenameSanitizerTests.swift */,
 				A2C1D0E1F2A34B5C9D8E7F61 /* CredentialCryptoTests.swift */,
 				B3D2E1F0A1B24C3D9E8F7A63 /* GoogleAPIErrorFormatterTests.swift */,
@@ -134,9 +159,22 @@
 			path = Utilities;
 			sourceTree = "<group>";
 		};
+		C9BF2CAD026C4E04A4A6BC36 /* FaceRename */ = {
+			isa = PBXGroup;
+			children = (
+				11703C8882C041529451390E /* FaceRenameFlowView.swift */,
+				B150451347D447D1A267E3CF /* FaceSelectStepView.swift */,
+				D6AC8D21CE8F47F2817AB174 /* FaceDetectStepView.swift */,
+				93133DE07176444FA02727B4 /* FaceIdentifyStepView.swift */,
+				328E9DAEA4624B7A828AB1E8 /* FacePreviewStepView.swift */,
+			);
+			path = FaceRename;
+			sourceTree = "<group>";
+		};
 		A11A0DE15000000000000001 /* Models */ = {
 			isa = PBXGroup;
 			children = (
+				FE95759804574A48AB6980A6 /* FaceModels.swift */,
 				63AC56FF1915437997674ED4 /* ImageItem.swift */,
 				B06D7246BE8645B7884EB039 /* SupportedImageTypes.swift */,
 			);
@@ -146,6 +184,11 @@
 		A11A5E871CE5000000000001 /* Services */ = {
 			isa = PBXGroup;
 			children = (
+				65F7D06F7B834952A3F91DFC /* FaceDetectionService.swift */,
+				35498EC1824648FCB5CFB6A5 /* FaceClusteringService.swift */,
+				59EB96DFEC844AC1AD1006B1 /* FaceFilenameBuilder.swift */,
+				FDB75C6E48B84974899ADC22 /* FaceIdentityStore.swift */,
+				EA516BF310CD4904A4007DD2 /* FaceRenameSession.swift */,
 				C57F65381ED54A9A9780641A /* SettingsStore.swift */,
 				D5F4A3B2C1D04E3F9A8B7C67 /* ImageLabeling.swift */,
 				FA54677DABEB46449C1733AD /* VisionClient.swift */,
@@ -160,6 +203,7 @@
 		A11A71E85000000000000001 /* Views */ = {
 			isa = PBXGroup;
 			children = (
+				C9BF2CAD026C4E04A4A6BC36 /* FaceRename */,
 				2E46A10AA91042B786961FFE /* ContentView.swift */,
 				CD2102691234436A9A704311 /* SettingsView.swift */,
 				8369A29FB59D4613B071E683 /* RenamePreviewSheet.swift */,
@@ -268,6 +312,17 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				D0ACE7DDA268466FB7AC3007 /* FaceModels.swift in Sources */,
+				0837F55D65694D92977D80A4 /* FaceDetectionService.swift in Sources */,
+				510753FA9FCA4DF6B5C90307 /* FaceClusteringService.swift in Sources */,
+				F235D07411124D6A96C25A29 /* FaceFilenameBuilder.swift in Sources */,
+				E67B46B659B84700A2C5CB83 /* FaceIdentityStore.swift in Sources */,
+				59FCD2DE78914F21861441B4 /* FaceRenameSession.swift in Sources */,
+				8F1F89B6D9054128B29638D2 /* FaceRenameFlowView.swift in Sources */,
+				78D2242BEE6B417EAAF7EFA0 /* FaceSelectStepView.swift in Sources */,
+				DA05107752EF41388D244A15 /* FaceDetectStepView.swift in Sources */,
+				82F621AD75654437B40A9817 /* FaceIdentifyStepView.swift in Sources */,
+				3CAD757932CB44148E08BC9D /* FacePreviewStepView.swift in Sources */,
 				FB82D96BD41D422C95218B2E /* ImageLabelApp.swift in Sources */,
 				538CAC36ACAF49C282318241 /* ImageItem.swift in Sources */,
 				B863C9B8F5CC47BE9261FE49 /* SupportedImageTypes.swift in Sources */,
@@ -291,6 +346,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				72B3CABC32224EAB98DF9E78 /* FaceFilenameBuilderTests.swift in Sources */,
 				0FEF702FDB614C97986E9257 /* FilenameSanitizerTests.swift in Sources */,
 				A2C1D0E1F2A34B5C9D8E7F60 /* CredentialCryptoTests.swift in Sources */,
 				B3D2E1F0A1B24C3D9E8F7A62 /* GoogleAPIErrorFormatterTests.swift in Sources */,

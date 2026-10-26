@@ -3,10 +3,39 @@ import SwiftUI
 
 struct SettingsView: View {
     @EnvironmentObject private var settings: SettingsStore
+    @EnvironmentObject private var identityStore: FaceIdentityStore
     @Environment(\.dismiss) private var dismiss
 
     var body: some View {
         Form {
+            Section {
+                Picker("Name order", selection: $settings.faceNameOrder) {
+                    ForEach(FaceNameOrder.allCases) { order in
+                        Text(order.rawValue).tag(order)
+                    }
+                }
+                Toggle("Remember people on this Mac", isOn: $settings.persistFaceIdentities)
+                HStack {
+                    Text("Match strictness")
+                    Slider(value: $settings.faceMatchThreshold, in: 0.45...0.90, step: 0.05)
+                    Text(String(format: "%.2f", settings.faceMatchThreshold))
+                        .monospacedDigit()
+                        .foregroundStyle(.secondary)
+                        .frame(width: 40, alignment: .trailing)
+                }
+                Button("Delete stored face identities…", role: .destructive) {
+                    identityStore.deleteAll()
+                }
+                .disabled(identityStore.identities.isEmpty)
+                Text("\(identityStore.identities.count) saved identity(ies). Face data stays on-device and is never uploaded.")
+                    .font(.caption)
+                    .foregroundStyle(.secondary)
+            } header: {
+                Text("Rename by Faces")
+            } footer: {
+                Text("Lower match distance = stricter grouping (fewer merges). Default left→right names use face position in each photo.")
+            }
+
             Section {
                 Picker("Backend", selection: $settings.labelingBackend) {
                     ForEach(SettingsStore.LabelingBackend.allCases) { backend in
