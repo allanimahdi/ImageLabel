@@ -5,6 +5,7 @@ import Vision
 enum FaceRenameStep: Int, CaseIterable, Identifiable {
     case select = 0
     case detect
+    case verify
     case identify
     case preview
 
@@ -14,8 +15,30 @@ enum FaceRenameStep: Int, CaseIterable, Identifiable {
         switch self {
         case .select: return "Select Photos"
         case .detect: return "Detect & Group"
+        case .verify: return "Face Verification"
         case .identify: return "Identify People"
         case .preview: return "Preview & Rename"
+        }
+    }
+}
+
+enum FaceVerificationResolution: Equatable {
+    case confirmed(name: String)
+    case unknown
+    case skipped
+}
+
+struct FaceVerificationItem: Identifiable, Equatable {
+    let id: UUID
+    let faceID: UUID
+    var suggestedName: String?
+    var resolution: FaceVerificationResolution?
+
+    /// Counts toward the mandatory sample (name confirm/correct or unknown — not skip).
+    var countsAsVerified: Bool {
+        switch resolution {
+        case .confirmed, .unknown: return true
+        case .skipped, .none: return false
         }
     }
 }

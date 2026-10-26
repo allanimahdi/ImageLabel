@@ -53,6 +53,8 @@ struct FaceRenameFlowView: View {
             FaceSelectStepView()
         case .detect:
             FaceDetectStepView()
+        case .verify:
+            FaceVerifyStepView()
         case .identify:
             FaceIdentifyStepView()
         case .preview:
@@ -97,9 +99,26 @@ struct FaceRenameFlowView: View {
             .disabled(faceSession.photoURLs.isEmpty || faceSession.isBusy)
         case .detect:
             EmptyView()
+        case .verify:
+            if faceSession.verificationMinimumMet {
+                Button("Skip Ambiguous") {
+                    faceSession.continueAfterMinimum(settings: settings)
+                }
+                Button("Reprocess & Preview") {
+                    faceSession.generatePreviewAfterVerification(settings: settings)
+                }
+                .buttonStyle(.borderedProminent)
+            } else {
+                Text("Confirm \(max(0, faceSession.requiredVerifications - faceSession.verifiedCount)) more")
+                    .foregroundStyle(.secondary)
+                    .font(.callout)
+            }
         case .identify:
             if faceSession.mergeSourceID != nil {
                 Button("Cancel Merge") { faceSession.cancelMerge() }
+            }
+            Button("Back to Verification") {
+                faceSession.step = .verify
             }
             Button("Generate Photo Names") {
                 faceSession.generatePhotoNames(settings: settings)

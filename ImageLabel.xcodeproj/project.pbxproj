@@ -18,8 +18,11 @@
 		78D2242BEE6B417EAAF7EFA0 /* FaceSelectStepView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B150451347D447D1A267E3CF /* FaceSelectStepView.swift */; };
 		DA05107752EF41388D244A15 /* FaceDetectStepView.swift in Sources */ = {isa = PBXBuildFile; fileRef = D6AC8D21CE8F47F2817AB174 /* FaceDetectStepView.swift */; };
 		82F621AD75654437B40A9817 /* FaceIdentifyStepView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 93133DE07176444FA02727B4 /* FaceIdentifyStepView.swift */; };
+		A1F2E3D4C5B647A8901234AB /* FaceVerifyStepView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1F2E3D4C5B647A8901234AC /* FaceVerifyStepView.swift */; };
 		3CAD757932CB44148E08BC9D /* FacePreviewStepView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 328E9DAEA4624B7A828AB1E8 /* FacePreviewStepView.swift */; };
+		B2E3F4A5D6C758B9012345BC /* FaceVerificationSampler.swift in Sources */ = {isa = PBXBuildFile; fileRef = B2E3F4A5D6C758B9012345BD /* FaceVerificationSampler.swift */; };
 		72B3CABC32224EAB98DF9E78 /* FaceFilenameBuilderTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = E84E6935DFCD41CEA1DDF24A /* FaceFilenameBuilderTests.swift */; };
+		C3F4A5B6E7D869CA012345CD /* FaceVerificationSamplerTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = C3F4A5B6E7D869CA012345CE /* FaceVerificationSamplerTests.swift */; };
 		07E05713051B4FE699523F00 /* SettingsStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = C57F65381ED54A9A9780641A /* SettingsStore.swift */; };
 		0FEF702FDB614C97986E9257 /* FilenameSanitizerTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 15EF72A14F5D4B37AEB3BA34 /* FilenameSanitizerTests.swift */; };
 		A2C1D0E1F2A34B5C9D8E7F60 /* CredentialCryptoTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = A2C1D0E1F2A34B5C9D8E7F61 /* CredentialCryptoTests.swift */; };
@@ -67,8 +70,11 @@
 		B150451347D447D1A267E3CF /* FaceSelectStepView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FaceSelectStepView.swift; sourceTree = "<group>"; };
 		D6AC8D21CE8F47F2817AB174 /* FaceDetectStepView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FaceDetectStepView.swift; sourceTree = "<group>"; };
 		93133DE07176444FA02727B4 /* FaceIdentifyStepView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FaceIdentifyStepView.swift; sourceTree = "<group>"; };
+		A1F2E3D4C5B647A8901234AC /* FaceVerifyStepView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FaceVerifyStepView.swift; sourceTree = "<group>"; };
 		328E9DAEA4624B7A828AB1E8 /* FacePreviewStepView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FacePreviewStepView.swift; sourceTree = "<group>"; };
+		B2E3F4A5D6C758B9012345BD /* FaceVerificationSampler.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FaceVerificationSampler.swift; sourceTree = "<group>"; };
 		E84E6935DFCD41CEA1DDF24A /* FaceFilenameBuilderTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FaceFilenameBuilderTests.swift; sourceTree = "<group>"; };
+		C3F4A5B6E7D869CA012345CE /* FaceVerificationSamplerTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FaceVerificationSamplerTests.swift; sourceTree = "<group>"; };
 		15EF72A14F5D4B37AEB3BA34 /* FilenameSanitizerTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FilenameSanitizerTests.swift; sourceTree = "<group>"; };
 		A2C1D0E1F2A34B5C9D8E7F61 /* CredentialCryptoTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CredentialCryptoTests.swift; sourceTree = "<group>"; };
 		B3D2E1F0A1B24C3D9E8F7A63 /* GoogleAPIErrorFormatterTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GoogleAPIErrorFormatterTests.swift; sourceTree = "<group>"; };
@@ -119,6 +125,7 @@
 			isa = PBXGroup;
 			children = (
 				E84E6935DFCD41CEA1DDF24A /* FaceFilenameBuilderTests.swift */,
+				C3F4A5B6E7D869CA012345CE /* FaceVerificationSamplerTests.swift */,
 				15EF72A14F5D4B37AEB3BA34 /* FilenameSanitizerTests.swift */,
 				A2C1D0E1F2A34B5C9D8E7F61 /* CredentialCryptoTests.swift */,
 				B3D2E1F0A1B24C3D9E8F7A63 /* GoogleAPIErrorFormatterTests.swift */,
@@ -167,6 +174,7 @@
 				11703C8882C041529451390E /* FaceRenameFlowView.swift */,
 				B150451347D447D1A267E3CF /* FaceSelectStepView.swift */,
 				D6AC8D21CE8F47F2817AB174 /* FaceDetectStepView.swift */,
+				A1F2E3D4C5B647A8901234AC /* FaceVerifyStepView.swift */,
 				93133DE07176444FA02727B4 /* FaceIdentifyStepView.swift */,
 				328E9DAEA4624B7A828AB1E8 /* FacePreviewStepView.swift */,
 			);
@@ -188,6 +196,7 @@
 			children = (
 				65F7D06F7B834952A3F91DFC /* FaceDetectionService.swift */,
 				35498EC1824648FCB5CFB6A5 /* FaceClusteringService.swift */,
+				B2E3F4A5D6C758B9012345BD /* FaceVerificationSampler.swift */,
 				59EB96DFEC844AC1AD1006B1 /* FaceFilenameBuilder.swift */,
 				FDB75C6E48B84974899ADC22 /* FaceIdentityStore.swift */,
 				EA516BF310CD4904A4007DD2 /* FaceRenameSession.swift */,
@@ -325,8 +334,10 @@
 				8F1F89B6D9054128B29638D2 /* FaceRenameFlowView.swift in Sources */,
 				78D2242BEE6B417EAAF7EFA0 /* FaceSelectStepView.swift in Sources */,
 				DA05107752EF41388D244A15 /* FaceDetectStepView.swift in Sources */,
+				A1F2E3D4C5B647A8901234AB /* FaceVerifyStepView.swift in Sources */,
 				82F621AD75654437B40A9817 /* FaceIdentifyStepView.swift in Sources */,
 				3CAD757932CB44148E08BC9D /* FacePreviewStepView.swift in Sources */,
+				B2E3F4A5D6C758B9012345BC /* FaceVerificationSampler.swift in Sources */,
 				FB82D96BD41D422C95218B2E /* ImageLabelApp.swift in Sources */,
 				538CAC36ACAF49C282318241 /* ImageItem.swift in Sources */,
 				B863C9B8F5CC47BE9261FE49 /* SupportedImageTypes.swift in Sources */,
@@ -351,6 +362,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				72B3CABC32224EAB98DF9E78 /* FaceFilenameBuilderTests.swift in Sources */,
+				C3F4A5B6E7D869CA012345CD /* FaceVerificationSamplerTests.swift in Sources */,
 				0FEF702FDB614C97986E9257 /* FilenameSanitizerTests.swift in Sources */,
 				A2C1D0E1F2A34B5C9D8E7F60 /* CredentialCryptoTests.swift in Sources */,
 				B3D2E1F0A1B24C3D9E8F7A62 /* GoogleAPIErrorFormatterTests.swift in Sources */,

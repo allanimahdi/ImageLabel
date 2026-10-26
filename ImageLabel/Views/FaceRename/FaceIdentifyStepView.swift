@@ -5,7 +5,7 @@ struct FaceIdentifyStepView: View {
 
     var body: some View {
         VStack(alignment: .leading, spacing: 0) {
-            Text("Name each person once. Matching faces across photos are already grouped. Merge / split if needed.")
+            Text("After face verification, high-confidence matches are filled in. Confirm flagged people, merge / split if needed, then generate names.")
                 .foregroundStyle(.secondary)
                 .padding()
 
