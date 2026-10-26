@@ -1,0 +1,31 @@
+# Xcode
+DerivedData/
+build/
+*.xcuserdata
+*.xcuserstate
+xcuserdata/
+*.moved-aside
+*.hmap
+*.ipa
+*.dSYM.zip
+*.dSYM
+
+# Swift Package Manager
+.build/
+.swiftpm/
+Packages/
+Package.resolved
+
+# Secrets — never commit credentials
+**/service-account*.json
+**/*credentials*.json
+.env
+.env.*
+*.pem
+Secrets.xcconfig
+Config.local.xcconfig
+
+# macOS
+.DS_Store
+.AppleDouble
+.LSOverride
