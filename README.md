@@ -64,10 +64,12 @@ The app stores only the **file path** in preferences. `.gitignore` already exclu
 1. **Select Folder** — choose a directory of images (`jpg`, `jpeg`, `png`, `heic`, `heif`, `webp`, `gif`, `tif`/`tiff`, `bmp`). HEIC/HEIF are re-encoded to JPEG for Google when needed; Local can read common formats via Vision.
 2. **Label Images** — Local or Google per Settings. Progress in the footer; failures are **per file**. On success, **Rename to Top Labels** opens.
 3. **Rename Files…** — apply best-score label only (e.g. `golden_retriever.jpg`). Collisions get `_2`, `_3`, …. **Undo** when available.
-4. **Group by Topic** (optional) — pick a label; preview then move matching files into a topic folder.
+4. **Auto-Group into Folders** (optional) — preview then move each labeled image into one **coarse** folder (`Animals`, `People`, `Nature`, `Food`, `Vehicles`, `Buildings`, `Sports`, `Technology`, `Art`, or `Other`). Fine labels like “Golden Retriever” collapse into `Animals` via keyword rules (not dozens of niche folders).
+5. **Group by Topic** (optional) — pick an exact Vision label yourself; preview then move matching files into a folder named after that label.
 
 ## Notes
 
 - Rename uses the **highest-score label only**; scores are never written into filenames.
-- Grouping matches the **topic you select** against each image’s labels (not only the top label).
+- Auto-Group sums label confidences per main category and picks the strongest bucket; unmatched labels go to `Other`.
+- Group by Topic matches the **topic you select** against each image’s labels (not only the top label).
 - Out of scope: training custom models, iOS, non-Mac platforms.

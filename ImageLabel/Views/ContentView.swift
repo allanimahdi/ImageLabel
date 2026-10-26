@@ -57,6 +57,14 @@ struct ContentView: View {
             .disabled(session.labeledCount == 0 || session.isBusy)
             .help("Preview renaming each file to its best-score Vision label (no score in the name), then Apply")
 
+            Button {
+                session.prepareAutoGroupPreview()
+            } label: {
+                Label("Auto-Group into Folders", systemImage: "folder.badge.gearshape")
+            }
+            .disabled(session.labeledCount == 0 || session.isBusy)
+            .help("Preview moving each image into a coarse main category (Animals, People, Nature, …)")
+
             Menu {
                 if session.availableTopics.isEmpty {
                     Text("Label images first")
@@ -71,7 +79,7 @@ struct ContentView: View {
                 Label("Group by Topic", systemImage: "square.stack.3d.up")
             }
             .disabled(session.labeledCount == 0 || session.isBusy)
-            .help("Optional: move images into a folder for a label you pick")
+            .help("Optional: move images into a folder for a Vision label you pick")
 
             if session.lastUndo != nil {
                 Button {
@@ -101,7 +109,7 @@ struct ContentView: View {
                 .foregroundStyle(.secondary)
             Text("Select a folder of images")
                 .font(.title2)
-            Text("1) Label (Local Apple Vision or Google) → 2) Rename to the top label → optionally Group by Topic.")
+            Text("1) Label → 2) Rename to top label → 3) Auto-Group into Folders (or pick a topic).")
                 .foregroundStyle(.secondary)
                 .multilineTextAlignment(.center)
                 .frame(maxWidth: 420)

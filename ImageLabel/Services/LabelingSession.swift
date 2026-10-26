@@ -15,6 +15,8 @@ final class LabelingSession: ObservableObject {
     @Published var showRenamePreview = false
     @Published var groupPreview: [GroupPlan] = []
     @Published var showGroupPreview = false
+    /// `true` when preview is Auto-Group (coarse categories); `false` for user-picked topic.
+    @Published var groupPreviewIsAuto = false
     @Published var selectedTopic: String?
     @Published var lastUndo: (() -> Void)?
 
@@ -64,6 +66,7 @@ final class LabelingSession: ObservableObject {
         lastUndo = nil
         renamePreview = []
         groupPreview = []
+        groupPreviewIsAuto = false
         selectedTopic = nil
         statusMessage = nil
 
@@ -217,12 +220,25 @@ final class LabelingSession: ObservableObject {
     func prepareGroupPreview(topic: String) {
         guard let root = folderURL else { return }
         selectedTopic = topic
+        groupPreviewIsAuto = false
         groupPreview = FileOperations.buildGroupPlans(for: items, topic: topic, root: root)
         showGroupPreview = true
     }
 
+    func prepareAutoGroupPreview() {
+        guard let root = folderURL else { return }
+        selectedTopic = nil
+        groupPreviewIsAuto = true
+        groupPreview = FileOperations.buildAutoGroupPlans(for: items, root: root)
+        showGroupPreview = true
+        if groupPreview.isEmpty {
+            statusMessage = "Nothing to auto-group — label images first, or they may already be in category folders."
+        }
+    }
+
     func applyGroupPreview() {
         let plans = groupPreview
+        let wasAuto = groupPreviewIsAuto
         showGroupPreview = false
         isBusy = true
         defer { isBusy = false }
@@ -250,7 +266,15 @@ final class LabelingSession: ObservableObject {
                 FileOperations.undoRenames(snapshot)
                 self?.reloadAfterUndo()
             }
-            statusMessage = "Moved \(applied.count) file\(applied.count == 1 ? "" : "s") into “\(selectedTopic ?? "topic")”. Undo available."
+            if wasAuto {
+                let folders = Set(plans.map(\.topic)).sorted()
+                let folderList = folders.joined(separator: ", ")
+                statusMessage = applied.isEmpty
+                    ? "No files moved."
+                    : "Auto-grouped \(applied.count) file\(applied.count == 1 ? "" : "s") into \(folders.count) folder\(folders.count == 1 ? "" : "s") (\(folderList)). Undo available."
+            } else {
+                statusMessage = "Moved \(applied.count) file\(applied.count == 1 ? "" : "s") into “\(selectedTopic ?? "topic")”. Undo available."
+            }
         } catch {
             statusMessage = "Group failed: \(error.localizedDescription)"
         }
