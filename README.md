@@ -35,6 +35,17 @@ The key is stored in the macOS **Keychain**, not in the repo. API-key mode never
 
 The app stores only the **file path** in preferences. `.gitignore` already excludes common credential filenames — never commit keys or JSON secrets. Settings shows a status line (service-account email or a clear error) without printing secrets.
 
+### If labeling returns HTTP 403
+
+Auth reached Google, but the project rejected the call. In [Google Cloud Console](https://console.cloud.google.com/) for the **same project** as your API key / service account:
+
+1. **APIs & Services → Library → Cloud Vision API → Enable** (wait a few minutes if you just enabled it).
+2. **Billing → Link a billing account** (Vision requires billing; free-tier quotas still need a linked account).
+3. **API key mode:** Credentials → your key → **API restrictions** allow Cloud Vision API (or none while testing). Avoid **HTTP referrer** application restrictions for this Mac app (use None or IP).
+4. **Service account mode:** IAM → grant the SA **Cloud Vision AI User** (`roles/visionai.user` / Vision-related role). Also ensure the SA can use the project (often **Service Usage Consumer**).
+
+Then ⌘R and Label Images again. The footer shows Google’s error message when available (secrets are redacted).
+
 ## How to use
 
 1. **Select Folder** — choose a directory of images (`jpg`, `jpeg`, `png`, `heic`, `heif`, `webp`, `gif`, `tif`/`tiff`, `bmp`). HEIC/HEIF are re-encoded to JPEG for the API when needed.

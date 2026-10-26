@@ -30,6 +30,7 @@ actor VisionClient {
     private let auth: VisionAuth
     private let session: URLSession
     private var cachedAccessToken: (token: String, expiry: Date)?
+    private var cachedQuotaProjectID: String?
 
     init(auth: VisionAuth, session: URLSession = .shared) {
         self.auth = auth
@@ -61,13 +62,25 @@ actor VisionClient {
             throw VisionError.httpStatus(-1, "No HTTP response")
         }
         guard (200..<300).contains(http.statusCode) else {
-            let text = String(data: responseData, encoding: .utf8) ?? ""
-            throw VisionError.httpStatus(http.statusCode, text.prefix(400).description)
+            throw VisionError.httpStatus(
+                http.statusCode,
+                GoogleAPIErrorFormatter.userMessage(statusCode: http.statusCode, body: responseData, auth: auth)
+            )
         }
 
         let decoded = try JSONDecoder().decode(AnnotateResponse.self, from: responseData)
         if let apiError = decoded.responses.first?.error {
-            throw VisionError.httpStatus(apiError.code ?? http.statusCode, apiError.message ?? "API error")
+            let code = apiError.code ?? http.statusCode
+            let raw = apiError.message ?? "API error"
+            throw VisionError.httpStatus(
+                code,
+                GoogleAPIErrorFormatter.userMessage(
+                    statusCode: code,
+                    googleMessage: raw,
+                    googleStatus: nil,
+                    auth: auth
+                )
+            )
         }
         let annotations = decoded.responses.first?.labelAnnotations ?? []
         guard !annotations.isEmpty else { throw VisionError.noLabels }
@@ -81,14 +94,21 @@ actor VisionClient {
     private func makeAnnotateRequest() async throws -> URLRequest {
         switch auth {
         case .apiKey(let key):
-            // API-key auth never touches RSA / JWT.
+            // API-key auth: query param only — never RSA / Bearer.
             var components = URLComponents(string: "https://vision.googleapis.com/v1/images:annotate")!
             components.queryItems = [URLQueryItem(name: "key", value: key)]
-            return URLRequest(url: components.url!)
+            guard let url = components.url else {
+                throw VisionError.missingCredentials("Could not build Vision request URL.")
+            }
+            return URLRequest(url: url)
         case .serviceAccount(let url):
             let token = try await accessToken(serviceAccountURL: url)
             var request = URLRequest(url: URL(string: "https://vision.googleapis.com/v1/images:annotate")!)
             request.setValue("Bearer \(token)", forHTTPHeaderField: "Authorization")
+            // Helps quota/billing attribution when org policies require a user project.
+            if let projectID = cachedQuotaProjectID, !projectID.isEmpty {
+                request.setValue(projectID, forHTTPHeaderField: "x-goog-user-project")
+            }
             return request
         }
     }
@@ -99,6 +119,7 @@ actor VisionClient {
         }
 
         let credentials = try ServiceAccountCredentials.load(from: serviceAccountURL)
+        cachedQuotaProjectID = credentials.projectID
         let now = Date()
         let claims: [String: Any] = [
             "iss": credentials.clientEmail,
@@ -112,13 +133,18 @@ actor VisionClient {
         var request = URLRequest(url: URL(string: credentials.tokenURI)!)
         request.httpMethod = "POST"
         request.setValue("application/x-www-form-urlencoded", forHTTPHeaderField: "Content-Type")
-        let form = "grant_type=urn%3Aietf%3Aparams%3Aoauth%3Agrant-type%3Ajwt-bearer&assertion=\(assertion)"
-        request.httpBody = Data(form.utf8)
+        var form = URLComponents()
+        form.queryItems = [
+            URLQueryItem(name: "grant_type", value: "urn:ietf:params:oauth:grant-type:jwt-bearer"),
+            URLQueryItem(name: "assertion", value: assertion)
+        ]
+        request.httpBody = Data((form.percentEncodedQuery ?? "").utf8)
 
         let (data, response) = try await session.data(for: request)
         guard let http = response as? HTTPURLResponse, (200..<300).contains(http.statusCode) else {
-            let text = String(data: data, encoding: .utf8) ?? ""
-            throw VisionError.serviceAccount("Token request failed: \(text.prefix(300))")
+            throw VisionError.serviceAccount(
+                GoogleAPIErrorFormatter.userMessage(statusCode: (response as? HTTPURLResponse)?.statusCode ?? -1, body: data, auth: auth)
+            )
         }
         let tokenResponse = try JSONDecoder().decode(TokenResponse.self, from: data)
         cachedAccessToken = (
@@ -136,6 +162,7 @@ struct ServiceAccountCredentials: Equatable {
     let clientEmail: String
     let privateKey: String
     let tokenURI: String
+    let projectID: String?
 
     /// Loads and validates a downloaded service-account JSON key file.
     static func load(from url: URL) throws -> ServiceAccountCredentials {
@@ -197,10 +224,13 @@ struct ServiceAccountCredentials: Equatable {
         // Fail fast if the key cannot be imported (avoids cryptic OSStatus later).
         _ = try RSAKey(pem: privateKey)
 
+        let projectID = (root["project_id"] as? String)?
+            .trimmingCharacters(in: .whitespacesAndNewlines)
         return ServiceAccountCredentials(
             clientEmail: email,
             privateKey: privateKey,
-            tokenURI: tokenURI
+            tokenURI: tokenURI,
+            projectID: (projectID?.isEmpty == false) ? projectID : nil
         )
     }
 
@@ -208,6 +238,119 @@ struct ServiceAccountCredentials: Equatable {
         // Single-line secret with no JSON structure.
         !text.contains("{") && !text.contains("\"") && text.count >= 20 && text.count <= 128
             && text.unicodeScalars.allSatisfy { CharacterSet.alphanumerics.contains($0) || $0 == "-" || $0 == "_" }
+    }
+}
+
+// MARK: - Google API error surfacing (no secrets)
+
+enum GoogleAPIErrorFormatter {
+    static func userMessage(statusCode: Int, body: Data, auth: VisionAuth) -> String {
+        let parsed = parse(body)
+        return userMessage(
+            statusCode: statusCode,
+            googleMessage: parsed?.message,
+            googleStatus: parsed?.status,
+            auth: auth
+        )
+    }
+
+    static func userMessage(
+        statusCode: Int,
+        googleMessage: String?,
+        googleStatus: String?,
+        auth: VisionAuth
+    ) -> String {
+        let cleaned = redactSecrets(googleMessage ?? "")
+            .trimmingCharacters(in: .whitespacesAndNewlines)
+        let status = googleStatus?.trimmingCharacters(in: .whitespacesAndNewlines)
+
+        var parts: [String] = []
+        if !cleaned.isEmpty {
+            parts.append(cleaned)
+        } else if let status, !status.isEmpty {
+            parts.append(status)
+        } else {
+            parts.append("HTTP \(statusCode)")
+        }
+
+        if let hint = configurationHint(statusCode: statusCode, message: cleaned, status: status, auth: auth) {
+            parts.append(hint)
+        }
+        return parts.joined(separator: " — ")
+    }
+
+    private static func parse(_ body: Data) -> (message: String, status: String?)? {
+        guard
+            let root = try? JSONSerialization.jsonObject(with: body) as? [String: Any],
+            let error = root["error"] as? [String: Any]
+        else {
+            let raw = String(data: body, encoding: .utf8)?
+                .trimmingCharacters(in: .whitespacesAndNewlines) ?? ""
+            if raw.isEmpty { return nil }
+            return (String(raw.prefix(400)), nil)
+        }
+        let message = (error["message"] as? String) ?? ""
+        let status = error["status"] as? String
+        return (String(message.prefix(500)), status)
+    }
+
+    /// Strip API keys / bearer tokens if Google ever echoes them (defensive).
+    static func redactSecrets(_ text: String) -> String {
+        var result = text
+        // API keys
+        if let regex = try? NSRegularExpression(pattern: #"AIza[0-9A-Za-z\-_]{10,}"#) {
+            let range = NSRange(result.startIndex..<result.endIndex, in: result)
+            result = regex.stringByReplacingMatches(in: result, range: range, withTemplate: "AIza…REDACTED")
+        }
+        // Bearer tokens / long opaque secrets
+        if let regex = try? NSRegularExpression(pattern: #"(?i)(Bearer\s+)[A-Za-z0-9._\-]{20,}"#) {
+            let range = NSRange(result.startIndex..<result.endIndex, in: result)
+            result = regex.stringByReplacingMatches(in: result, range: range, withTemplate: "$1…REDACTED")
+        }
+        if let regex = try? NSRegularExpression(pattern: #"(?i)(key=)[A-Za-z0-9_\-]{10,}"#) {
+            let range = NSRange(result.startIndex..<result.endIndex, in: result)
+            result = regex.stringByReplacingMatches(in: result, range: range, withTemplate: "$1…REDACTED")
+        }
+        return result
+    }
+
+    static func configurationHint(
+        statusCode: Int,
+        message: String,
+        status: String?,
+        auth: VisionAuth
+    ) -> String? {
+        let blob = (message + " " + (status ?? "")).lowercased()
+        guard statusCode == 403 || statusCode == 401
+            || blob.contains("permission")
+            || blob.contains("forbidden")
+            || blob.contains("denied")
+            || blob.contains("disabled")
+            || blob.contains("not been used")
+            || blob.contains("billing")
+        else {
+            return nil
+        }
+
+        if blob.contains("not been used") || blob.contains("is disabled") || blob.contains("has not been used") {
+            return "Enable Cloud Vision API for this GCP project: Console → APIs & Services → Library → “Cloud Vision API” → Enable. Wait a few minutes, then retry (⌘R)."
+        }
+        if blob.contains("billing") {
+            return "Link a billing account to the GCP project (Billing → Link a billing account). Vision requires billing even within free-tier quotas."
+        }
+        if blob.contains("api key not valid") || blob.contains("api_key_invalid") || blob.contains("missing a valid api key") {
+            return "Check Settings → API Key: paste a key from the same project where Vision is enabled. Under Credentials → your key → API restrictions, allow “Cloud Vision API” (or don’t restrict APIs while testing)."
+        }
+        if blob.contains("api_key_service_blocked") || blob.contains("api_key_http_referrer") || blob.contains("requests from this") {
+            return "API key application restrictions are blocking this Mac app. In Console → Credentials → your key, set Application restrictions to None (or IP) while testing; API restrictions should include Cloud Vision API."
+        }
+
+        switch auth {
+        case .apiKey:
+            return "Likely GCP config: (1) enable Cloud Vision API, (2) ensure billing is linked, (3) fix API key restrictions (allow Cloud Vision API; avoid HTTP-referrer restriction for a Mac app). Same project as the key."
+        case .serviceAccount:
+            return "Likely GCP config: (1) enable Cloud Vision API on the service-account’s project, (2) link billing, (3) grant the SA “Cloud Vision AI User” (roles/serviceusage.serviceUsageConsumer may also be needed for quota). Then ⌘R."
+        }
     }
 }
 

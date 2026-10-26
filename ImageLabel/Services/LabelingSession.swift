@@ -132,8 +132,12 @@ final class LabelingSession: ObservableObject {
 
         let ok = labeledCount
         let bad = failedCount
-        statusMessage = "Labeled \(ok) of \(items.count)"
-            + (bad > 0 ? " (\(bad) failed)." : ".")
+        if bad > 0, let firstError = items.compactMap(\.errorMessage).first {
+            statusMessage = "Labeled \(ok) of \(items.count) (\(bad) failed). \(firstError)"
+        } else {
+            statusMessage = "Labeled \(ok) of \(items.count)"
+                + (bad > 0 ? " (\(bad) failed)." : ".")
+        }
     }
 
     func prepareRenamePreview() {
