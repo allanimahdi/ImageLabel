@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		A6D5169B25F14CA898797A79 /* HomeLandingView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B009786A7CD84894A856A56B /* HomeLandingView.swift */; };
 		D0ACE7DDA268466FB7AC3007 /* FaceModels.swift in Sources */ = {isa = PBXBuildFile; fileRef = FE95759804574A48AB6980A6 /* FaceModels.swift */; };
 		0837F55D65694D92977D80A4 /* FaceDetectionService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 65F7D06F7B834952A3F91DFC /* FaceDetectionService.swift */; };
 		510753FA9FCA4DF6B5C90307 /* FaceClusteringService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 35498EC1824648FCB5CFB6A5 /* FaceClusteringService.swift */; };
@@ -55,6 +56,7 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		B009786A7CD84894A856A56B /* HomeLandingView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeLandingView.swift; sourceTree = "<group>"; };
 		FE95759804574A48AB6980A6 /* FaceModels.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FaceModels.swift; sourceTree = "<group>"; };
 		65F7D06F7B834952A3F91DFC /* FaceDetectionService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FaceDetectionService.swift; sourceTree = "<group>"; };
 		35498EC1824648FCB5CFB6A5 /* FaceClusteringService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FaceClusteringService.swift; sourceTree = "<group>"; };
@@ -203,6 +205,7 @@
 		A11A71E85000000000000001 /* Views */ = {
 			isa = PBXGroup;
 			children = (
+				B009786A7CD84894A856A56B /* HomeLandingView.swift */,
 				C9BF2CAD026C4E04A4A6BC36 /* FaceRename */,
 				2E46A10AA91042B786961FFE /* ContentView.swift */,
 				CD2102691234436A9A704311 /* SettingsView.swift */,
@@ -312,6 +315,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				A6D5169B25F14CA898797A79 /* HomeLandingView.swift in Sources */,
 				D0ACE7DDA268466FB7AC3007 /* FaceModels.swift in Sources */,
 				0837F55D65694D92977D80A4 /* FaceDetectionService.swift in Sources */,
 				510753FA9FCA4DF6B5C90307 /* FaceClusteringService.swift in Sources */,

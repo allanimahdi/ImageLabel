@@ -7,18 +7,26 @@ struct ContentView: View {
     @EnvironmentObject private var identityStore: FaceIdentityStore
     @State private var showSettings = false
     @State private var showFaceRename = false
+    /// When false, show the home landing; true after opening a folder for Label & Rename.
+    @State private var showLabelWorkspace = false
 
     var body: some View {
-        VStack(spacing: 0) {
-            toolbar
-            Divider()
-            if session.items.isEmpty {
-                emptyState
+        Group {
+            if showLabelWorkspace, session.folderURL != nil {
+                labelWorkspace
             } else {
-                imageTable
+                HomeLandingView(
+                    labelingBackendLabel: settings.labelingBackend.rawValue,
+                    canLabel: settings.canLabel,
+                    onLabelAndRename: startLabelAndRename,
+                    onRenameByFaces: {
+                        faceSession.reset()
+                        showFaceRename = true
+                    },
+                    onAutoGroup: startAutoGroupFromHome,
+                    onSettings: { showSettings = true }
+                )
             }
-            Divider()
-            footer
         }
         .sheet(isPresented: $showSettings) {
             SettingsView()
@@ -40,21 +48,74 @@ struct ContentView: View {
                 .environmentObject(faceSession)
                 .environmentObject(identityStore)
         }
+        .onChange(of: session.folderURL) { _, url in
+            if url == nil {
+                showLabelWorkspace = false
+            }
+        }
     }
 
-    private var toolbar: some View {
-        HStack(spacing: 12) {
+    // MARK: - Home actions
+
+    private func startLabelAndRename() {
+        session.chooseFolder()
+        if session.folderURL != nil {
+            showLabelWorkspace = true
+        }
+    }
+
+    private func startAutoGroupFromHome() {
+        if session.labeledCount > 0 {
+            showLabelWorkspace = session.folderURL != nil
+            session.prepareAutoGroupPreview()
+            return
+        }
+        // Need labels first — open a folder, then user runs Label Images.
+        session.chooseFolder()
+        if session.folderURL != nil {
+            showLabelWorkspace = true
+            session.statusMessage = "Label Images first, then use Auto-Group into Folders."
+        }
+    }
+
+    // MARK: - Label workspace (compact chrome after landing)
+
+    private var labelWorkspace: some View {
+        VStack(spacing: 0) {
+            workspaceToolbar
+            Divider()
+            if session.items.isEmpty {
+                workspaceEmpty
+            } else {
+                imageTable
+            }
+            Divider()
+            footer
+        }
+    }
+
+    private var workspaceToolbar: some View {
+        HStack(spacing: 10) {
+            Button {
+                showLabelWorkspace = false
+            } label: {
+                Label("Home", systemImage: "chevron.left")
+            }
+            .help("Back to home")
+
+            Divider().frame(height: 18)
+
             Button {
                 session.chooseFolder()
             } label: {
-                Label("Select Folder", systemImage: "folder")
+                Label("Folder", systemImage: "folder")
             }
             .disabled(session.isBusy)
 
             Button {
                 Task { await session.labelAll(using: settings) }
             } label: {
-                Label("Label Images", systemImage: "tag")
+                Label("Label", systemImage: "tag")
             }
             .disabled(session.items.isEmpty || session.isBusy || !settings.canLabel)
             .help(labelButtonHelp)
@@ -62,27 +123,16 @@ struct ContentView: View {
             Button {
                 session.prepareRenamePreview()
             } label: {
-                Label("Rename Files…", systemImage: "pencil")
+                Label("Rename", systemImage: "pencil")
             }
             .disabled(session.labeledCount == 0 || session.isBusy)
-            .help("Preview renaming each file to its best-score Vision label (no score in the name), then Apply")
-
-            Button {
-                faceSession.reset()
-                showFaceRename = true
-            } label: {
-                Label("Rename by Faces…", systemImage: "person.crop.rectangle.stack")
-            }
-            .disabled(session.isBusy)
-            .help("Detect faces on-device, name people once, preview, then rename photos")
 
             Button {
                 session.prepareAutoGroupPreview()
             } label: {
-                Label("Auto-Group into Folders", systemImage: "folder.badge.gearshape")
+                Label("Auto-Group", systemImage: "folder.badge.gearshape")
             }
             .disabled(session.labeledCount == 0 || session.isBusy)
-            .help("Preview moving each image into a coarse main category (Animals, People, Nature, …)")
 
             Menu {
                 if session.availableTopics.isEmpty {
@@ -95,10 +145,9 @@ struct ContentView: View {
                     }
                 }
             } label: {
-                Label("Group by Topic", systemImage: "square.stack.3d.up")
+                Label("Topic", systemImage: "square.stack.3d.up")
             }
             .disabled(session.labeledCount == 0 || session.isBusy)
-            .help("Optional: move images into a folder for a Vision label you pick")
 
             if session.lastUndo != nil {
                 Button {
@@ -112,43 +161,33 @@ struct ContentView: View {
             Spacer()
 
             Button {
+                faceSession.reset()
+                showFaceRename = true
+            } label: {
+                Label("Faces", systemImage: "person.crop.rectangle.stack")
+            }
+            .disabled(session.isBusy)
+
+            Button {
                 showSettings = true
             } label: {
-                Label("Settings", systemImage: "gearshape")
+                Image(systemName: "gearshape")
             }
+            .help("Settings")
         }
-        .padding(.horizontal, 16)
-        .padding(.vertical, 10)
+        .padding(.horizontal, 14)
+        .padding(.vertical, 8)
     }
 
-    private var emptyState: some View {
-        VStack(spacing: 16) {
-            Image(systemName: "photo.on.rectangle.angled")
-                .font(.system(size: 48))
+    private var workspaceEmpty: some View {
+        VStack(spacing: 12) {
+            Text("No supported images in this folder")
+                .font(.title3)
+            Text("Pick another folder, or go Home and choose a different action.")
                 .foregroundStyle(.secondary)
-            Text("Select a folder of images")
-                .font(.title2)
-            Text("1) Label → 2) Rename to top label → 3) Auto-Group into Folders (or pick a topic).")
-                .foregroundStyle(.secondary)
-                .multilineTextAlignment(.center)
-                .frame(maxWidth: 420)
-            Text(settings.labelingBackend == .localApple
-                ? "Settings default to Local (Apple Vision) — free & offline."
-                : "Google Cloud Vision selected — credentials required in Settings.")
-                .font(.callout)
-                .foregroundStyle(settings.canLabel ? Color.secondary : Color.orange)
-            if settings.labelingBackend == .googleCloud && !settings.canLabel {
-                Text("Add an API key or service-account JSON, or switch Labeling to Local.")
-                    .font(.callout)
-                    .foregroundStyle(.orange)
-            }
-            Button("Select Folder") {
-                session.chooseFolder()
-            }
-            .keyboardShortcut("o", modifiers: .command)
+            Button("Choose Folder") { session.chooseFolder() }
         }
         .frame(maxWidth: .infinity, maxHeight: .infinity)
-        .padding()
     }
 
     private var imageTable: some View {
@@ -237,7 +276,6 @@ struct ContentView: View {
                     session.prepareRenamePreview()
                 }
                 .buttonStyle(.borderedProminent)
-                .help("Rename on disk to each file’s best Vision label")
             }
 
             if let folder = session.folderURL {
