@@ -49,9 +49,9 @@ Then ⌘R and Label Images again. The footer shows Google’s error message when
 ## How to use
 
 1. **Select Folder** — choose a directory of images (`jpg`, `jpeg`, `png`, `heic`, `heif`, `webp`, `gif`, `tif`/`tiff`, `bmp`). HEIC/HEIF are re-encoded to JPEG for the API when needed.
-2. **Label Images** — calls Vision label detection per file. Progress shows in the footer. Failures are recorded **per file**; the batch continues.
-3. **Rename Preview** — dry-run of proposed names from the top label only (e.g. `golden_retriever.jpg`). Collisions get `_2`, `_3`, … suffixes. Confirm to apply. **Undo** restores the last rename/group batch when available.
-4. **Group by Topic** — pick a label from the menu (sorted by how often it appears). Preview which files move into a folder named after that topic, then confirm.
+2. **Label Images** — calls Vision label detection per file. Progress shows in the footer. Failures are recorded **per file**; the batch continues. When labeling succeeds, a **Rename to Top Labels** sheet opens automatically.
+3. **Rename Files…** — preview then **Apply Renames** to rename each file on disk to its **best-score label only** (e.g. `golden_retriever.jpg` — no score in the name). Collisions get `_2`, `_3`, … **Undo** restores the last rename/group batch when available.
+4. **Group by Topic** (optional, separate) — pick a label from the menu. Preview which files move into a folder named after that topic, then confirm.
 
 ## Notes
 

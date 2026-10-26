@@ -20,7 +20,7 @@ struct ContentView: View {
         .sheet(isPresented: $showSettings) {
             SettingsView()
                 .environmentObject(settings)
-                .frame(width: 480, height: 360)
+                .frame(width: 520, height: 400)
         }
         .sheet(isPresented: $session.showRenamePreview) {
             RenamePreviewSheet()
@@ -52,9 +52,10 @@ struct ContentView: View {
             Button {
                 session.prepareRenamePreview()
             } label: {
-                Label("Rename Preview", systemImage: "pencil")
+                Label("Rename Files…", systemImage: "pencil")
             }
             .disabled(session.labeledCount == 0 || session.isBusy)
+            .help("Preview renaming each file to its best-score Vision label (no score in the name), then Apply")
 
             Menu {
                 if session.availableTopics.isEmpty {
@@ -70,6 +71,7 @@ struct ContentView: View {
                 Label("Group by Topic", systemImage: "square.stack.3d.up")
             }
             .disabled(session.labeledCount == 0 || session.isBusy)
+            .help("Optional: move images into a folder for a label you pick")
 
             if session.lastUndo != nil {
                 Button {
@@ -99,7 +101,7 @@ struct ContentView: View {
                 .foregroundStyle(.secondary)
             Text("Select a folder of images")
                 .font(.title2)
-            Text("ImageLabel uses Google Cloud Vision to rename files from the top label and optionally group by a topic you choose.")
+            Text("1) Label with Vision → 2) Rename Files to the top label → optionally Group by Topic.")
                 .foregroundStyle(.secondary)
                 .multilineTextAlignment(.center)
                 .frame(maxWidth: 420)
@@ -141,7 +143,7 @@ struct ContentView: View {
             }
             .width(60)
 
-            TableColumn("Proposed Name") { item in
+            TableColumn("New Name") { item in
                 Text(item.proposedName ?? "—")
                     .foregroundStyle(.secondary)
                     .lineLimit(1)
@@ -192,10 +194,19 @@ struct ContentView: View {
             if let message = session.statusMessage {
                 Text(message)
                     .foregroundStyle(.secondary)
-                    .lineLimit(1)
+                    .lineLimit(2)
+                    .help(message)
             }
 
             Spacer()
+
+            if session.labeledCount > 0, !session.isBusy, session.pendingRenameCount > 0 {
+                Button("Rename Files…") {
+                    session.prepareRenamePreview()
+                }
+                .buttonStyle(.borderedProminent)
+                .help("Rename on disk to each file’s best Vision label")
+            }
 
             if let folder = session.folderURL {
                 Text(folder.path)

@@ -130,6 +130,8 @@ final class LabelingSession: ObservableObject {
             progressCompleted = index + 1
         }
 
+        refreshProposedNamesFromTopLabels()
+
         let ok = labeledCount
         let bad = failedCount
         if bad > 0, let firstError = items.compactMap(\.errorMessage).first {
@@ -138,11 +140,36 @@ final class LabelingSession: ObservableObject {
             statusMessage = "Labeled \(ok) of \(items.count)"
                 + (bad > 0 ? " (\(bad) failed)." : ".")
         }
+
+        // Happy path: after labels arrive, offer rename to top labels (preview → apply).
+        if ok > 0 {
+            statusMessage = (statusMessage ?? "") + " Review Rename to apply on disk."
+            prepareRenamePreview()
+        }
+    }
+
+    /// Collision-safe proposed filenames from each item’s best-score Vision label (no score in the name).
+    func refreshProposedNamesFromTopLabels() {
+        let eligible = items.filter { $0.topLabel != nil }
+        let plans = FileOperations.buildRenamePlans(for: eligible)
+        let bySource = Dictionary(uniqueKeysWithValues: plans.map { ($0.source, $0) })
+        for index in items.indices {
+            if let plan = bySource[items[index].url] {
+                items[index].proposedName = plan.destination.lastPathComponent
+            }
+        }
+    }
+
+    var pendingRenameCount: Int {
+        FileOperations.buildRenamePlans(for: items.filter { $0.topLabel != nil })
+            .filter(\.changesName)
+            .count
     }
 
     func prepareRenamePreview() {
         let eligible = items.filter { $0.topLabel != nil }
         renamePreview = FileOperations.buildRenamePlans(for: eligible)
+        refreshProposedNamesFromTopLabels()
         showRenamePreview = true
     }
 
@@ -177,7 +204,7 @@ final class LabelingSession: ObservableObject {
             }
             statusMessage = applied.isEmpty
                 ? "Nothing to rename (names already match top labels)."
-                : "Renamed \(applied.count) file\(applied.count == 1 ? "" : "s"). Undo available."
+                : "Renamed \(applied.count) file\(applied.count == 1 ? "" : "s") to top Vision labels. Undo available."
         } catch {
             statusMessage = "Rename failed: \(error.localizedDescription)"
         }
